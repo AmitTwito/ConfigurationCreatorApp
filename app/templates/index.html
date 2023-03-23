@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<form method="post" action="/save_configuration" id="submitform">
+    {% for template in state.random_sections %}
+    <div class="container">
+        {% include template %}
+    </div>
+    <hr>
+    {% endfor %}
+    <br>
+    <button type="submit" class="btn btn-primary">Next</button>
+</form>
+
+
+{% endblock %}

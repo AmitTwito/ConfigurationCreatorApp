@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ConfigurationCreatorApp.iml" filepath="$PROJECT_DIR$/.idea/ConfigurationCreatorApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/configuration-creator-app.iml" filepath="$PROJECT_DIR$/.idea/configuration-creator-app.iml" />
     </modules>
   </component>
 </project>

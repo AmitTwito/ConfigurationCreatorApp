@@ -1,0 +1,8 @@
+<div>
+    <h5>Select Mode:</h5>
+    <br>
+    {% for mode in state.config.mode_options %}
+    <input type="radio" name="options" id={{mode.value}} value={{mode.value}}> {{mode.name}}
+    {% endfor %}
+</div>
+
