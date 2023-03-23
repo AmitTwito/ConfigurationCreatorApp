@@ -12,8 +12,7 @@ state = State(config)
 def index():
     n = 5
     state.generate_random_sections(n)
-    return render_template('index.html', title="Configuration Creator", state=state,
-                           debug_checked=config.is_production_mode)
+    return render_template('index.html', title="Configuration Creator", state=state,)
 
 # @app.route('/')
 # def index():

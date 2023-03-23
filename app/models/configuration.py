@@ -11,10 +11,10 @@ class Mode(Enum):
 class Configuration:
 
     def __init__(self):
-        self.is_production_mode = False
+        self.mode = Mode.PRODUCTION
         self.all_tests = list(range(1, 11))
         self.chosen_tests = [3, 5, 7]
-        self.mode_options = [{"value": m.value, "name": m.name, } for m in Mode]
+        self.mode_options = Mode
         self.users = []
         self.chosen_image_path = ""
         self.is_use_hardware_acceleration = True
