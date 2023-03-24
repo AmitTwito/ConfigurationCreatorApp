@@ -1,13 +1,13 @@
 <div>
     <h5>Select Mode:</h5>
-    <br>
-    {% for mode in state.config.mode_options %}
-    {% if mode.value == state.config.mode.value %}
-    <input type="radio" name="options" value={{mode.value}} checked>
+    {% for mode in state.config_options.modes %}
+    {% if mode.value == state.current_mode.value %}
+    <input type="radio" name="mode-options" value={{mode.value}} checked>
     {% else %}
-    <input type="radio" name="options" value={{mode.value}} >
+    <input type="radio" name="mode-options" value={{mode.value}} >
     {% endif %}
-    {{mode.name}}
+    {{mode.name.title()}}
+    <br>
     {% endfor %}
 </div>
 

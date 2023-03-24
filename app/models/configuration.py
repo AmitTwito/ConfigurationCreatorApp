@@ -1,6 +1,12 @@
 import yaml
 import json
+import os
+import os.path
 from enum import Enum
+
+from app.models.user import User, UserType
+
+DEFAULT_CONFIG_PATH = "config.yaml"
 
 
 class Mode(Enum):
@@ -10,30 +16,25 @@ class Mode(Enum):
 
 class Configuration:
 
-    def __init__(self):
-        self.mode = Mode.PRODUCTION
-        self.all_tests = list(range(1, 11))
-        self.chosen_tests = [3, 5, 7]
-        self.mode_options = Mode
-        self.users = []
+    def __init__(self, file_path=DEFAULT_CONFIG_PATH):
+        self.mode = Mode.DEBUG
+        self.tests = [1, 2, 3]
+        self.users = [User(user_type=UserType.ADMIN, email="admin@gmail.com", password="admin123456"),
+                      User(user_type=UserType.STANDARD, email="employee@gmail.com", password="User123456")]
         self.chosen_image_path = ""
-        self.is_use_hardware_acceleration = True
-        self.config_file_name = "config.yaml"
+        self.is_use_hardware_acceleration = False
+        self.config_file_name = file_path
 
-    def _read_from_file(self):
-
-        with open(self.config_file_name, "r") as stream:
-            try:
-                print(yaml.safe_load(stream))
-            except yaml.YAMLError as exc:
-                print(exc)
+    def read_from_file(self):
+        with open(self.config_file_name, "r") as file:
+            data = yaml.safe_load(file)
 
     def save_to_file(self):
         json_string = '{}'
-        dict = json.loads(json_string)
-        ymal = yaml.dump(dict)
+        json_dict = json.loads(json_string)
+        yaml_object = yaml.dump(json_dict)
         with open(self.config_file_name, "w") as stream:
             try:
-                print(stream.write(ymal))
+                print(stream.write(yaml_object))
             except yaml.YAMLError as exc:
                 print(exc)

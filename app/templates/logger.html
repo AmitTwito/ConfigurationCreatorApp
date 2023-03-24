@@ -1,6 +1,12 @@
-<div class="container overflow-auto p-3 mb-3 mb-md-0 mr-md-3 bg-light" style="max-height:200px">
-    {% for message in state.messages %}
-    {{message}}
+<div class="container overflow-auto p-3 mb-3mb-md-0 mr-md-3" style="max-height:100px;overflow:scroll;background-color:white" id="logger">
+    {% for log in state.logs %}
+    <label style="color: {{state.log_type_colors[log.type]}}">
+        {{log.text}}
+    </label>
     <br>
     {% endfor %}
 </div>
+<script>
+    var textarea = document.getElementById('logger');
+    textarea.scrollTop = textarea.scrollHeight;
+</script>

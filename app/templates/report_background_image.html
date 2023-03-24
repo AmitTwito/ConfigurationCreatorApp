@@ -1,0 +1,7 @@
+<div style="width:500px">
+    <input type="file" class="form-control" accept=".png, .jpg, .jpeg, .gif" id="file" name="image"
+           onchange="document.getElementById('imagePath').value = document.getElementById('file').files[0].name">
+    <br>
+    <input class="form-control" id="imagePath" name="imagePath" type="text" placeholder="Enter path for image" value="{{state.chosen_image_path}}">
+</div>
+

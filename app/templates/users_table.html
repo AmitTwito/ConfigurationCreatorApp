@@ -1,0 +1,50 @@
+<div class="table">
+    <table class="table table-hover table-bordered bg-white">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col">Type</th>
+            <th scope="col">Email</th>
+            <th scope="col">Password</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in state.users %}
+        <tr>
+            <td>
+                {{user.type.name.title()}}
+            </td>
+            <td>
+                {{user.email}}
+            </td>
+            <td>
+                {{user.password}}
+            </td>
+            <td>
+                <a href="/users/delete/{{loop.index}}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td>
+                <div class="dropdown" style="max-width:100%;">
+                    <select class="form-select" name="selected-user-type" id="selected-user-type">
+                        {% for type in state.config_options.user_types %}
+                        <option value="{{loop.index}}">{{type.name.title()}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </td>
+            <td>
+                <input class="form-control" name="new-user-email" type="email">
+            </td>
+            <td>
+                <input class="form-control" name="new-user-password" type="text">
+            </td>
+            <td>
+                <a href="/users/add/" class="btn btn-primary">Add</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

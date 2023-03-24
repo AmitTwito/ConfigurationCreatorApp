@@ -1,20 +1,19 @@
 <div>
     <h5>Select Tests:</h5>
-    <br>
-    {% for test in state.config.all_tests %}
+    {% for test in state.config_options.all_tests %}
     <div class="checkbox">
-        {% if test in state.config.chosen_tests %}
+        {% if test in state.tests %}
         <label>
-            <input type="checkbox" name="check" value={{test}} checked="checked"/>
-
+            <input type="checkbox" name="selected-tests" value={{test}} checked="checked" onClick="toggleSelectAll()"/>
         </label>
         {% else %}
         <label>
-            <input type="checkbox" name="check" value={{test}} />
+            <input type="checkbox" name="selected-tests" value={{test}} onClick="toggleSelectAll()"/>
         </label>
         {% endif %}
         Test {{test}}
     </div>
     {% endfor %}
+    <br>
+    <input type="checkbox" name="select-all-tests" onClick="selectAll()"/> Select All<br/>
 </div>
-

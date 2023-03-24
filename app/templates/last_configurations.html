@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<form method="post" id="submitform">
+    {% for template in state.rest_of_the_sections %}
+    <div class="container">
+        {% include template %}
+    </div>
+    <hr>
+    {% endfor %}
+    <br>
+    <button type="submit" class="btn btn-success" style="float: right;">Finish</button>
+</form>
+<a href="{{url_for('index')}}" class="btn btn-info" role="button">Back</a>
+
+
+{% endblock %}
