@@ -1,27 +1,20 @@
-import datetime
-from enum import Enum
 import random
 
+import yaml
+
 from app.models.configuration import Configuration, Mode, DEFAULT_CONFIG_PATH
+from app.enums.configuration_section import ConfigurationSection
 from app.models.logger import Logger, LogType
 from app.models.user import UserType
 
 MAX_RANDOM_SECTIONS_NUMBER = 5
 DEFAULT_RANDOM_SECTIONS_NUMBER = 3
-DEFAULT_TESTS_NUMBER = 11
+DEFAULT_TESTS_NUMBER = 10
 
 
-class ConfigurationSection(Enum):
-    MODE = 0
-    TESTS = 1
-    USERS = 2
-    REPORT_BACKGROUND_IMAGE = 3
-    HARDWARE_ACCELERATION = 4
-
-
-class State:
-    def __init__(self, config_file_path=DEFAULT_CONFIG_PATH, max_tests=DEFAULT_TESTS_NUMBER,
-                 sections_number=DEFAULT_RANDOM_SECTIONS_NUMBER):
+class BuisinessLogic:
+    def __init__(self, config_file_path=DEFAULT_CONFIG_PATH, max_tests_number=DEFAULT_TESTS_NUMBER + 1,
+                 number_of_sections_to_randomize=DEFAULT_RANDOM_SECTIONS_NUMBER):
         self._configuration = Configuration(config_file_path)
         self.config_section_to_function = {ConfigurationSection.MODE: self._update_mode,
                                            ConfigurationSection.TESTS: self._update_chosen_tests,
@@ -35,21 +28,12 @@ class State:
                                            ConfigurationSection.HARDWARE_ACCELERATION: "hardware_acceleration.html",
                                            }
         self.log_type_colors = {LogType.MESSAGE: "black", LogType.ERROR: "red"}
-        self.config_options = {"modes": Mode, "user_types": UserType, "all_tests": list(range(1, max_tests)), }
-        self.sections_number = sections_number
+        self.config_options = {"modes": Mode, "user_types": UserType, "all_tests": list(range(1, max_tests_number)), }
+        self.sections_number = number_of_sections_to_randomize
 
         self._random_sections, self.rest_of_the_sections = [], []
         self._logger = Logger()
-        self._logger.add_log("Script started running", LogType.MESSAGE)
-        self._logger.add_log("Trying to read config file...", LogType.MESSAGE)
-        try:
-            self._configuration.read_from_file()
-            self._logger.add_log("Successfully read config file.", LogType.MESSAGE)
-        except Exception as e:
-            m = "No valid config.yaml file exists. Setting configuration to default"
-            self._logger.add_log(m, LogType.ERROR)
-        self._logger.add_log(f"Number of random configuration sections to generate is set to {sections_number}",
-                             LogType.MESSAGE)
+        self._start_logging_and_load_config(max_tests_number, number_of_sections_to_randomize)
         self._generate_random_sections()
 
     @property
@@ -70,6 +54,27 @@ class State:
     def add_log(self, text: str, log_type: LogType):
         self._logger.add_log(text, log_type)
 
+    def _start_logging_and_load_config(self, max_tests_number, number_of_sections_to_randomize):
+        self._logger.add_log("Script started running", LogType.MESSAGE)
+        self._logger.add_log("Trying to read config file...", LogType.MESSAGE)
+        error_prefix = "Problem at reading the config file"
+        error_suffix = "Setting configuration to default"
+        try:
+            self._configuration.read_from_file(max_tests_number)
+            self._logger.add_log("Successfully read config file.", LogType.MESSAGE)
+        except FileNotFoundError as e:
+            m = f"{error_prefix}: No valid config.yaml file exists. {error_suffix}"
+            self._logger.add_log(m, LogType.ERROR)
+        except ValueError as e:
+            m = f"{error_prefix}: Wrong value Error:{e} {error_suffix}"
+            self._logger.add_log(m, LogType.ERROR)
+        except Exception as e:
+            m = f"{error_prefix}: {e}. {error_suffix}"
+            self._logger.add_log(m, LogType.ERROR)
+        self._logger.add_log(
+            f"Number of random configuration sections to generate is set to {number_of_sections_to_randomize}",
+            LogType.MESSAGE)
+
     def _generate_random_sections(self, ):
         self._logger.add_log("Generating random configuration sections...", LogType.MESSAGE)
         if self.sections_number > MAX_RANDOM_SECTIONS_NUMBER:
@@ -81,8 +86,7 @@ class State:
             self.sections_number = DEFAULT_RANDOM_SECTIONS_NUMBER
         random_section_numbers = random.sample(range(0, 5), self.sections_number)
         random_section_numbers.sort()
-        self._random_sections = [ConfigurationSection(i) for i in
-                                 random_section_numbers]
+        self._random_sections = [ConfigurationSection(i) for i in random_section_numbers]
         self.rest_of_the_sections = list(set(self.config_section_to_template.keys()) - set(self._random_sections))
         self._logger.add_log(f"Finished generating {self.sections_number} random configuration sections.",
                              LogType.MESSAGE)
@@ -94,9 +98,13 @@ class State:
 
     def _update_chosen_tests(self, form):
 
-        chosen_tests = form.get('selected-tests')
-        chosen_tests = [int(test) for test in chosen_tests]
-        self._configuration.tests = chosen_tests
+        if 'selected-tests' not in form:
+            self._configuration.tests = []
+        else:
+            chosen_tests = form.get('selected-tests')
+            chosen_tests = [chosen_tests] if chosen_tests is str else chosen_tests
+            chosen_tests = [int(test) for test in chosen_tests]
+            self._configuration.tests = chosen_tests
 
     def _update_is_use_hardware_acceleration(self, form):
         self._configuration.is_use_hardware_acceleration = True if form.get('toggle') == 'on' else False
@@ -126,6 +134,8 @@ class State:
             self._logger.add_log("Saving configuration to file...", LogType.MESSAGE)
             self._configuration.save_to_file()
             self._logger.add_log("Successfully saved configuration", LogType.MESSAGE)
+        except yaml.YAMLError as e:
+            raise Exception(f'Yaml Error while saving the configuration to file: {str(e)}')
         except Exception as e:
             raise Exception(f'Error saving the configuration to file: {str(e)}')
 
@@ -134,7 +144,7 @@ class State:
             return '/'
         return '/last_configurations'
 
-    def as_dict(self):
+    def get_state(self):
         return {"title": "Configuration Creator", "random_sections": self.random_sections,
                 "rest_of_the_sections": self.rest_of_the_sections,
                 "config_section_to_template": self.config_section_to_template, "users": self._configuration.users,
@@ -142,4 +152,10 @@ class State:
                 "config_options": self.config_options, "current_mode": self._configuration.mode,
                 "chosen_image_path": self._configuration.report_background_image,
                 "tests": self._configuration.tests,
-                "logs": self.get_logs(), "log_type_colors": self.log_type_colors}
+                "logs": self._logger.logs, "log_type_colors": self.log_type_colors}
+
+    def update_config(self, is_randomized_sections, request_form):
+        sections = self.random_sections if is_randomized_sections else self.rest_of_the_sections
+        for config_section in sections:
+            config_section_update_function = self.config_section_to_function[config_section]
+            config_section_update_function(request_form)

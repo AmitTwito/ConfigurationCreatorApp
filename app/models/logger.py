@@ -28,6 +28,7 @@ class Logger:
 
     def add_log(self, text: str, log_type: LogType):
         text = f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} {text}'
+        print(text)
         self._logs.append(Log(text, log_type))
 
     @property

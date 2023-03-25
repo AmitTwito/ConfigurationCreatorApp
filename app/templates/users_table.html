@@ -13,7 +13,7 @@
         {% for user in state.users %}
         <tr>
             <td>
-                {{user.type.name.title()}}
+                {{user.type.name}}
             </td>
             <td>
                 {{user.email}}
@@ -31,7 +31,7 @@
                 <div class="dropdown" style="max-width:100%;">
                     <select class="form-select" name="selected-user-type" id="selected-user-type" form="addUserForm">
                         {% for type in state.config_options.user_types %}
-                        <option value="{{loop.index}}">{{type.name.title()}}</option>
+                        <option value="{{loop.index}}">{{type.name}}</option>
                         {% endfor %}
                     </select>
                 </div>

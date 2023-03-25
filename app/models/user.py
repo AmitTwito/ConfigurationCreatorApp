@@ -1,9 +1,4 @@
-from enum import Enum
-
-
-class UserType(Enum):
-    ADMIN = 0
-    STANDARD = 1
+from app.enums.user_type import UserType
 
 
 class User(object):

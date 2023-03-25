@@ -1,8 +1,8 @@
-mode: Debug
-report-background-image: ''
+hardware_acceleration: false
+mode: Production
+report_background_image: asd.png
 tests:
 - 1
-use-hardware-acceleration: false
 users:
 - email: admin@gmail.com
   password: admin123456
