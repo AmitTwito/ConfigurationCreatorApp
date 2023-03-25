@@ -1,1 +1,12 @@
-{}
+mode: Debug
+report-background-image: ''
+tests:
+- 1
+use-hardware-acceleration: false
+users:
+- email: admin@gmail.com
+  password: admin123456
+  type: Admin
+- email: employee@gmail.com
+  password: User123456
+  type: Standard

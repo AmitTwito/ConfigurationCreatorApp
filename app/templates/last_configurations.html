@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 
-<form method="post" id="submitform">
-    {% for template in state.rest_of_the_sections %}
-    <div class="container">
-        {% include template %}
-    </div>
-    <hr>
-    {% endfor %}
-    <br>
+
+{% for template in state.rest_of_the_sections %}
+<div class="container">
+    {% include state.config_section_to_template[template] %}
+</div>
+<hr>
+{% endfor %}
+<br>
+<form method="post" action="/finish" id="save-config-form">
     <button type="submit" class="btn btn-success" style="float: right;">Finish</button>
 </form>
 <a href="{{url_for('index')}}" class="btn btn-info" role="button">Back</a>

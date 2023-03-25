@@ -1,4 +1,5 @@
 from app import app
+from app.models.logger import LogType
 from flask import render_template, url_for, request, redirect
 
 from app.models.configuration import Configuration
@@ -10,52 +11,56 @@ state = State(sections_number=n)
 
 @app.route('/')
 def index():
+    return render_template('index.html', state=state.as_dict())
 
-    return render_template('index.html', state=state.to_dict())
-
-
-# @app.route('/')
-# def index():
-#     n = 3
-#     state.generate_random_sections(3)
-#     return render_template('index.html', title="Configuration Creator", state=state,
-#                            debug_checked=config.is_production_mode)
 
 @app.route('/last_configurations', methods=["GET", "POST"])
 def last_configurations():
-    next_page = None
-    if 'test' in request.form:
-        checkes = request.form['test']
-    if 'toggle' in request.form:
-        toggle = ''
-    state.config.save_to_file()
-    next_page = render_template('last_configurations.html', state=state.to_dict())
-    return next_page
-
-
-@app.route('/users/delete/<user_id>')
-def delete_user(user_id):
-    user_id = int(user_id) - 1
-
-    try:
-        del state.config.users[user_id]
-    except Exception:
-        state.add_log(f"Error deleting user with id {user_id}")
-    if "users_table.html" in state.random_sections:
-        return redirect('/')
+    if request.method == "POST":
+        try:
+            for config_section in state.random_sections:
+                config_section_update_function = state.config_section_to_function[config_section]
+                config_section_update_function(request.form)
+            state.save_config_to_file()
+            return render_template('last_configurations.html', state=state.as_dict())
+        # except ValueError as e:
+        #     state.add_log(str(e), LogType.ERROR)
+        #     return redirect('/')
+        # except FileNotFoundError as e:
+        #     state.add_log(str(e), LogType.ERROR)
+        #     return redirect('/')
+        except Exception as e:
+            state.add_log(f"Error on POST request /last_configurations: {str(e)}", LogType.ERROR)
+            return redirect('/')
     else:
-        return redirect('/last_configurations')
+        return render_template('last_configurations.html', state=state.as_dict())
+
+
+@app.route('/finish', methods=["POST"])
+def finish():
+    try:
+        for config_section in state.rest_of_the_sections:
+            config_section_update_function = state.config_section_to_function[config_section]
+            config_section_update_function(request.form)
+        state.save_config_to_file()
+    # except ValueError as e:
+    #     state.add_log(str(e), LogType.ERROR)
+    #     return redirect('/')
+    except Exception as e:
+        state.add_log(f"Error on POST request /finish: {str(e)}", LogType.ERROR)
+
+    return redirect('/last_configurations')
+
+
+@app.route('/users/delete/<user_id>', )
+def delete_user(user_id):
+    return redirect(state.delete_user(user_id))
 
 
 @app.route('/users/add', methods=["POST"])
 def add_user():
-    return redirect('/')
-
-@app.route('/tests/change_all_tests')
-def change_all_tests():
-    state.change_selected_tests()
-
-    return
-# @app.route('/last_configurations')
-# def back():
-#     return render_template('last_configurations.html', title="Configuration Creator", state=state)
+    user_type = request.form.get('selected-user-type')
+    email = request.form.get('new-user-email')
+    password = request.form.get('new-user-password')
+    to_current_page = state.add_user(user_type, email, password)
+    return redirect(to_current_page)

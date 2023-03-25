@@ -2,9 +2,9 @@
     <h5>Select Mode:</h5>
     {% for mode in state.config_options.modes %}
     {% if mode.value == state.current_mode.value %}
-    <input type="radio" name="mode-options" value={{mode.value}} checked>
+    <input type="radio" name="mode-options" value={{mode.value}} form="save-config-form" checked>
     {% else %}
-    <input type="radio" name="mode-options" value={{mode.value}} >
+    <input type="radio" name="mode-options" value={{mode.value}} form="save-config-form" >
     {% endif %}
     {{mode.name.title()}}
     <br>

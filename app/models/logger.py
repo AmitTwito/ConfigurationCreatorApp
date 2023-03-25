@@ -21,17 +21,15 @@ class Log:
         return self._log_type
 
 
-
 class Logger:
     def __init__(self):
         self._logs = [Log("Configuration Creator V1", LogType.MESSAGE),
                       Log("Please make sure to insert correct inputs.", LogType.MESSAGE)]
 
-    def add_log(self, text, log_type):
+    def add_log(self, text: str, log_type: LogType):
         text = f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} {text}'
         self._logs.append(Log(text, log_type))
 
     @property
     def logs(self):
         return self._logs
-

@@ -1,3 +1,4 @@
+<form id="addUserForm" action="/users/add" method="post"></form>
 <div class="table">
     <table class="table table-hover table-bordered bg-white">
         <thead class="thead-light">
@@ -28,7 +29,7 @@
         <tr>
             <td>
                 <div class="dropdown" style="max-width:100%;">
-                    <select class="form-select" name="selected-user-type" id="selected-user-type">
+                    <select class="form-select" name="selected-user-type" id="selected-user-type" form="addUserForm">
                         {% for type in state.config_options.user_types %}
                         <option value="{{loop.index}}">{{type.name.title()}}</option>
                         {% endfor %}
@@ -36,13 +37,13 @@
                 </div>
             </td>
             <td>
-                <input class="form-control" name="new-user-email" type="email">
+                <input class="form-control" name="new-user-email" type="text" form="addUserForm">
             </td>
             <td>
-                <input class="form-control" name="new-user-password" type="text">
+                <input class="form-control" name="new-user-password" type="text" form="addUserForm">
             </td>
             <td>
-                <a href="/users/add/" class="btn btn-primary">Add</a>
+                <button type="submit" class="btn btn-primary" form="addUserForm">Add</button>
             </td>
         </tr>
         </tbody>
