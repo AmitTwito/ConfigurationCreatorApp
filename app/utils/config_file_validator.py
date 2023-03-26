@@ -11,14 +11,16 @@ class ConfigFileValidator:
         missing_valid_keys_error_message = f"The config file {config_file_path} is missing the following " \
                                            f"sections:"
         yaml_config_file_keys = [section.yaml_key_name for section in ConfigurationSections]
-        modes = {mode.name: mode for mode in Modes}
-        user_types = {user_type.name: user_type for user_type in UserTypes}
+
         missing_keys = []
         for key in yaml_config_file_keys:
             if key not in yaml_object:
                 missing_keys.append(key)
         if missing_keys:
             raise KeyError(f"{missing_valid_keys_error_message} {missing_keys}")
+
+        modes = {mode.name: mode for mode in Modes}
+        user_types = {user_type.name: user_type for user_type in UserTypes}
 
         invalid_values_error_message = "The config file {self.config_file_name} have some wrong values:"
 

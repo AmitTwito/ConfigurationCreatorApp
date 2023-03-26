@@ -6,13 +6,19 @@ from app.utils.config_file_validator import ConfigFileValidator
 from app.enums.mode_enum import Modes
 from app.utils.input_validator import InputValidator
 from app.models.user import User, UserTypes
+from configuration_sections.mode_section import ModeSection
+from configuration_sections.users_section import UsersSection
+from configuration_sections.hardware_acceleration_section import HardwareAccelerationSection
+from configuration_sections.tests_section import TestsSection
+from configuration_sections.report_background_image_section import ReportBackgroundImageSection
 
 DEFAULT_CONFIG_PATH = "config.yaml"
 
 
 class Configuration:
 
-    def __init__(self, file_path=DEFAULT_CONFIG_PATH):
+    def __init__(self, file_path=DEFAULT_CONFIG_PATH, ):
+
         self._mode = Modes.DEBUG
         self._tests = []
         self.users = [User(user_type=UserTypes.ADMIN, email="admin@gmail.com", password="admin123456"), ]
@@ -85,13 +91,13 @@ class Configuration:
                 'report_background_image': self._report_background_image_path,
                 'hardware_acceleration': self._is_use_hardware_acceleration}
 
-    def as_dict_for_yaml(self):
-        config_dict = self.as_dict()
-        config_dict[ConfigurationSections.REPORT_BACKGROUND_IMAGE.yaml_key_name] = config_dict.pop(
-            'report_background_image')
-        config_dict[ConfigurationSections.HARDWARE_ACCELERATION.yaml_key_name] = config_dict.pop(
-            'hardware_acceleration')
-        return config_dict
+    # def as_dict_for_yaml(self):
+    #     config_dict = self.as_dict()
+    #     config_dict[ConfigurationSections.REPORT_BACKGROUND_IMAGE.yaml_key_name] = config_dict.pop(
+    #         'report_background_image')
+    #     config_dict[ConfigurationSections.HARDWARE_ACCELERATION.yaml_key_name] = config_dict.pop(
+    #         'hardware_acceleration')
+    #     return config_dict
 
     def read_from_file(self, max_tests_number):
         with open(self.config_file_path, "r") as file:
@@ -100,7 +106,8 @@ class Configuration:
             self.from_yaml_object(yaml_object)
 
     def save_to_file(self):
-        yaml_object = yaml.dump(self.as_dict_for_yaml())
+        # yaml_object = yaml.dump(self.as_dict_for_yaml())
+        yaml_object = yaml.dump(self.as_dict())
         with open(self.config_file_path, "w") as file:
             file.write(yaml_object)
 
@@ -110,4 +117,4 @@ class Configuration:
         self._report_background_image_path = yaml_object[ConfigurationSections.REPORT_BACKGROUND_IMAGE.yaml_key_name]
         self._tests = yaml_object[ConfigurationSections.TESTS.yaml_key_name]
         users = yaml_object[ConfigurationSections.USERS.yaml_key_name]
-        self._users = [User(UserTypes.get_by_name(user['type']),user['email'],user['password']) for user in users]
+        self._users = [User(UserTypes.get_by_name(user['type']), user['email'], user['password']) for user in users]

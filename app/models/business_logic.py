@@ -15,7 +15,6 @@ DEFAULT_TESTS_NUMBER = 10
 class BusinessLogic:
     def __init__(self, config_file_path=DEFAULT_CONFIG_PATH, max_tests_number=DEFAULT_TESTS_NUMBER,
                  number_of_sections_to_randomize=DEFAULT_RANDOM_SECTIONS_NUMBER):
-        self._configuration = Configuration(config_file_path)
         self.config_section_to_function = {ConfigurationSections.MODE: self._update_mode,
                                            ConfigurationSections.TESTS: self._update_chosen_tests,
                                            ConfigurationSections.REPORT_BACKGROUND_IMAGE: self._update_report_background_image_path,
@@ -26,7 +25,10 @@ class BusinessLogic:
                                            ConfigurationSections.USERS: "users_table.html",
                                            ConfigurationSections.REPORT_BACKGROUND_IMAGE: "report_background_image.html",
                                            ConfigurationSections.HARDWARE_ACCELERATION: "hardware_acceleration.html",
+
                                            }
+        self._configuration = Configuration(config_file_path)
+
         self.log_type_colors = {LogTypes.MESSAGE: "black", LogTypes.ERROR: "red"}
         self.config_options = {"modes": Modes, "user_types": UserTypes,
                                "all_tests": list(range(1, max_tests_number + 1)), }
@@ -161,3 +163,4 @@ class BusinessLogic:
         for config_section in sections:
             config_section_update_function = self.config_section_to_function[config_section]
             config_section_update_function(request_form)
+

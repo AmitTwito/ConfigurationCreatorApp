@@ -8,9 +8,9 @@ class BaseEnum(Enum):
     def name(self):
         return super(BaseEnum, self).name.title()
 
-    @property
-    def yaml_key_name(self):
-        return super(BaseEnum, self).name.lower().replace('_', '-')
+    # @property
+    # def yaml_key_name(self):
+    #     return super(BaseEnum, self).name.lower().replace('_', '-')
 
     @property
     def name_lower_case(self):
