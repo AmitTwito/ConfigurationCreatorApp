@@ -1,6 +1,6 @@
 hardware_acceleration: true
 mode: Production
-report_background_image: asd.png
+report_background_image: C:\Users\Amit\Documents\projects\forsub\asd.png
 tests:
 - 1
 - 2
@@ -12,7 +12,4 @@ tests:
 - 8
 - 9
 - 10
-users:
-- email: asdas@sadasd.com
-  password: asdasd
-  type: Admin
+users: []
