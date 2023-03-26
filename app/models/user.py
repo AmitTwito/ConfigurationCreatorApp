@@ -1,8 +1,8 @@
-from app.enums.user_type import UserType
+from app.enums.user_type_enum import UserTypes
 
 
 class User(object):
-    def __init__(self, user_type=UserType.STANDARD, email="", password=""):
+    def __init__(self, user_type=UserTypes.STANDARD, email="", password=""):
         self._type = user_type
         self._email = email
         self._password = password

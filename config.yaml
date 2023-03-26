@@ -3,19 +3,10 @@ mode: Production
 report-background-image: asd.png
 tests:
 - 1
-- 2
 - 3
-- 4
-- 5
-- 6
-- 7
 - 8
 - 9
-- 10
 users:
 - email: admin@gmail.com
   password: admin123456
   type: Admin
-- email: asdasd@asdasd.com
-  password: asdadsad
-  type: Standard
