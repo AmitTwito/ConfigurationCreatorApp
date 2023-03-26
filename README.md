@@ -24,3 +24,5 @@ Then browse to ```http://localhost:PORT```
 
 And if you want to open it as a desktop app:
 ```python start_app```
+
+See the config.yaml file in the main directory as an example. - if no users or tests wanted in the config, set them as []
