@@ -21,7 +21,7 @@ class ModeSection(ConfigurationSection):
     def validate_from_yaml(self, value):
         modes = {mode.name: mode for mode in Modes}
         if value not in modes.keys():
-            return {"error": f"Wrong mode value. Please choose a valid from:{modes.keys()}"}
+            return {"error": f"Wrong mode value. Please choose a valid from:{list(modes.keys())}"}
 
         return Modes.get_by_name(value)
 

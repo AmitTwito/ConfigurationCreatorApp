@@ -18,16 +18,16 @@ class TestsSection(ConfigurationSection):
         there_any_error = False
 
         if len(tests) > self._max_tests_number:
-            error += f"The number of tests is greater than the max number of tests which is {self._max_tests_number}. "
+            error += f"\nThe number of tests is greater than the max number of tests which is {self._max_tests_number}. "
             there_any_error = True
         try:
             tests = [int(test) for test in tests]
         except ValueError:
-            error += "The list of tests need to be of positive integers."
+            error += "\nThe list of tests needs to be of positive integers."
             there_any_error = True
 
         if any(test not in range(1, self._max_tests_number + 1) for test in tests):
-            error += "Test numbers need to be within range 1 to {self._max_tests_number}. "
+            error += f"\nTest numbers need to be within range 1 to {self._max_tests_number}. "
             there_any_error = True
 
         if there_any_error:
@@ -41,21 +41,21 @@ class TestsSection(ConfigurationSection):
         error = "Error at updating the tests list: "
         there_any_error = False
         if not all(isinstance(x, int) for x in tests):
-            error += "The list of tests need to be of positive integers. "
+            error += "\nThe list of tests needs to be of positive integers. "
             there_any_error = True
 
         if len(tests) > self._max_tests_number:
-            error += f"The number of tests is greater than the max number of tests which is {self._max_tests_number}. "
+            error += f"\nThe number of tests is greater than the max number of tests which is {self._max_tests_number}. "
             there_any_error = True
 
-        try:
-            tests = [int(test) for test in tests]
-        except ValueError:
-            error += "The list of tests need to be of positive integers."
-            there_any_error = True
+        # try:
+        #     tests = [int(test) for test in tests]
+        # except ValueError:
+        #     error += "\nThe list of tests needs to be of positive integers."
+        #     there_any_error = True
 
         if any(test not in range(1, self._max_tests_number + 1) for test in tests):
-            error += "Test numbers need to be within range 1 to {self._max_tests_number}. "
+            error += f"\nTest numbers need to be within range 1 to {self._max_tests_number}. "
             there_any_error = True
 
         if there_any_error:

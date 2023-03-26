@@ -33,8 +33,8 @@ class BusinessLogic:
 
         self._random_sections, self._rest_of_the_sections = [], []
         self._logger = Logger()
-        self._start_logging_and_load_config(number_of_sections_to_randomize)
-        self._generate_random_sections_to_display()
+        self._start_logging_and_load_config(max_tests_number=max_tests_number, wanted_config_file_path=config_file_path)
+        self._generate_random_sections_to_display(number_of_sections_to_randomize)
 
     @property
     def configuration(self):
@@ -66,9 +66,14 @@ class BusinessLogic:
     def add_log(self, text: str, log_type: LogTypes):
         self._logger.add_log(text, log_type)
 
-    def _start_logging_and_load_config(self, number_of_sections_to_randomize):
+    def _start_logging_and_load_config(self, max_tests_number, wanted_config_file_path):
         self._logger.add_log("Script started running", LogTypes.MESSAGE)
-        self._logger.add_log("Trying to read config file...", LogTypes.MESSAGE)
+        self._logger.add_log(
+            f"Max tests number is set to {max_tests_number}",
+            LogTypes.MESSAGE)
+        self._logger.add_log(
+            f"Trying to read config file at {wanted_config_file_path}, the default is {DEFAULT_CONFIG_PATH}",
+            LogTypes.MESSAGE)
         error_prefix = "Problem at reading the config file"
         error_suffix = "Setting configuration to default"
         try:
@@ -80,18 +85,19 @@ class BusinessLogic:
             else:
                 self._logger.add_log("Successfully read config file.", LogTypes.MESSAGE)
         except FileNotFoundError as e:
-            m = f"{error_prefix}: No valid config.yaml file exists. {error_suffix}"
+            m = f"{error_prefix}: the file {wanted_config_file_path} does not exist or is not a valid yaml file. \n{error_suffix} "
             self._logger.add_log(m, LogTypes.ERROR)
             self._logger.add_log(str(e), LogTypes.ERROR)
+
         except Exception as e:
             m = f"{error_prefix}: {e}. {error_suffix}"
             self._logger.add_log(m, LogTypes.ERROR)
             self._logger.add_log(str(e), LogTypes.ERROR)
+
+    def _generate_random_sections_to_display(self, number_of_sections_to_randomize):
         self._logger.add_log(
             f"Number of random configuration sections to generate is set to {number_of_sections_to_randomize}",
             LogTypes.MESSAGE)
-
-    def _generate_random_sections_to_display(self, ):
         self._logger.add_log("Generating random configuration sections...", LogTypes.MESSAGE)
         if self.number_of_sections_to_randomize > len(ConfigurationSections):
             self._logger.add_log("Number of sections to randomly present needs to be 5 or less.", LogTypes.ERROR)
@@ -152,8 +158,8 @@ class BusinessLogic:
                 "chosen_image_path": config[ConfigurationSections.REPORT_BACKGROUND_IMAGE.name_lower_case],
                 "tests": config[ConfigurationSections.TESTS.name_lower_case],
                 "logs": self._logger.logs, "log_type_colors": self.log_type_colors,
-                "config_options": self.config_options, "sections_number":len(ConfigurationSections),
-                "number_of_sections_to_randomize":self.number_of_sections_to_randomize}
+                "config_options": self.config_options, "sections_number": len(ConfigurationSections),
+                "number_of_sections_to_randomize": self.number_of_sections_to_randomize}
 
     def validate_and_update_config(self, is_randomized_sections, request_form):
         sections = self.random_sections if is_randomized_sections else self._rest_of_the_sections

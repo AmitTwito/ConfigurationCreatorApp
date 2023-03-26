@@ -4,6 +4,7 @@ from os.path import join, dirname
 from dotenv import load_dotenv
 from flask import Flask
 from app.routes import ApiController
+import webbrowser
 
 dir_name = os.path.dirname(__file__)
 os.environ["PYTHONPATH"] = dir_name
@@ -29,3 +30,7 @@ controller = ApiController(config_file_path=config_file_path,
 app = Flask(__name__)
 controller.init_app(app)
 app.run(debug=True, host="localhost", port=port)
+
+
+# webbrowser.get(using="google-chrome").open(f"http://localhost:{port}",new=0)
+
