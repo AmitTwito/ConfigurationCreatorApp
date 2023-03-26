@@ -4,9 +4,10 @@
 How to run:
 
 Open CMD in the main folders
-
-``` pip install -r "requirements.txt" ```
-```cd app ```
+```
+pip install -r "requirements.txt"
+cd app 
+```
 
 Then create ```.env``` to have:
 
