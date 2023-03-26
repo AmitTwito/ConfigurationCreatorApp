@@ -14,7 +14,7 @@ class InputValidator:
 
     @classmethod
     def is_file_path_valid_image(cls, path):
-        return os.path.exists(path) and filetype.is_image(path)
+        return path is not None and path is str and os.path.exists(path) and filetype.is_image(path)
 
     @classmethod
     def is_password_valid(cls, password):

@@ -2,9 +2,9 @@
 {% block content %}
 
 
-{% for template in state.rest_of_the_sections %}
+{% for section in state.rest_of_the_sections %}
 <div class="container">
-    {% include state.config_section_to_template[template] %}
+    {% include section.template %}
 </div>
 <hr>
 {% endfor %}

@@ -5,14 +5,15 @@ class ConfigurationSection(object):
 
     def __init__(self, configuration_section_type: ConfigurationSections, template_file: str):
         self._configuration_section_type = configuration_section_type
-        self._template_file = template_file
+        self._template = template_file
+        self._form_keys = [{}]
 
     @property
-    def template_file(self):
-        return self._template_file
+    def template(self):
+        return self._template
 
-    @template_file.setter
-    def template_File(self, value):
+    @template.setter
+    def template(self, value):
         raise AttributeError('Setting the template_file attr is forbidden')
 
     @property
@@ -23,6 +24,14 @@ class ConfigurationSection(object):
     def configuration_section_type(self, value):
         raise AttributeError('Setting the template_file attr is forbidden')
 
+    @property
+    def form_keys(self):
+        return self._form_keys
+
+    @form_keys.setter
+    def form_keys(self, value):
+        raise AttributeError('Setting the form_keys attr is forbidden')
+
     def as_dict(self) -> dict:
         pass
 
@@ -31,6 +40,8 @@ class ConfigurationSection(object):
 
     def validate_and_update_from_yaml(self, value):
         validated_value = self.validate_from_yaml(value)
+        if isinstance(validated_value, dict):
+            return validated_value
         self.update(validated_value)
 
     def validate_from_yaml(self, value):
@@ -38,6 +49,8 @@ class ConfigurationSection(object):
 
     def validate_and_update(self, value):
         validated_value = self.validate(value)
+        if isinstance(validated_value, dict):
+            return validated_value
         self.update(validated_value)
 
     def validate(self, value) -> any:

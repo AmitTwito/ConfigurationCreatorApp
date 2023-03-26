@@ -19,4 +19,7 @@ class BaseEnum(Enum):
     @classmethod
     def get_by_name(cls, name):
         name_to_enum_dict = {enum_type.name: enum_type for enum_type in cls}
-        return name_to_enum_dict[name]
+        if name in name_to_enum_dict.keys():
+
+            return name_to_enum_dict[name]
+        return ""

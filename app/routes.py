@@ -1,7 +1,5 @@
-from flask import Flask
-
+from app.enums.configuration_section_enum import ConfigurationSections
 from app.models.business_logic import BusinessLogic
-from app.models.configuration import DEFAULT_CONFIG_PATH
 from app.models.logger import LogTypes
 from flask import render_template, request, redirect
 
@@ -24,16 +22,9 @@ class ApiController:
         def last_configurations():
             if request.method == "POST":
                 try:
-                    self.bl.update_config(is_randomized_sections=True, request_form=request.form)
+                    self.bl.validate_and_update_config(is_randomized_sections=True, request_form=request.form)
                     self.bl.save_config_to_file()
                     return render_template('last_configurations.html', state=self.bl.get_state())
-                # except ValueError as e:
-                #     state.add_log(str(e), LogType.ERROR)
-                #     return redirect('/')
-                # except FileNotFoundError as e:
-                #     state.add_log(str(e), LogType.ERROR)
-                #     return redirect('/')
-
                 except Exception as e:  # all other exceptions
                     print('Error on POST request /last_configurations: ')
                     self.bl.add_log(f"{str(e)}", LogTypes.ERROR)
@@ -43,17 +34,18 @@ class ApiController:
 
         @app.route('/finish', methods=["POST"])
         def finish():
+            is_randomized_sections = False
+            if self.bl.number_of_sections_to_randomize == len(ConfigurationSections):
+                is_randomized_sections = True
             try:
-                self.bl.update_config(is_randomized_sections=False, request_form=request.form)
+                self.bl.validate_and_update_config(is_randomized_sections=is_randomized_sections, request_form=request.form)
                 self.bl.save_config_to_file()
-            # except ValueError as e:
-            #     state.add_log(str(e), LogType.ERROR)
-            #     return redirect('/')
             except Exception as e:
                 print('Error on POST request /finish: ')
                 self.bl.add_log(f"{str(e)}", LogTypes.ERROR)
 
-            return redirect('/last_configurations')
+            return redirect('/last_configurations') if self.bl.number_of_sections_to_randomize < len(
+                ConfigurationSections) else redirect('/')
 
         @app.route('/users/delete/<user_id>')
         def delete_user(user_id):

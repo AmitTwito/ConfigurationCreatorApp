@@ -6,27 +6,31 @@ class HardwareAccelerationSection(ConfigurationSection):
 
     def __init__(self, configuration_section_type: ConfigurationSections, template_file: str):
         super().__init__(configuration_section_type, template_file)
-        self._is_use_hardware_acceleration = False
+        self._is_hardware_acceleration_toggle_on = False
+        self._form_keys = [{"key": "toggle", "is_collection": False}]
 
     @property
     def is_hardware_acceleration_toggle_on(self):
-        return self._is_use_hardware_acceleration
+        return self._is_hardware_acceleration_toggle_on
 
     @is_hardware_acceleration_toggle_on.setter
     def is_hardware_acceleration_toggle_on(self, value: bool):
         raise AttributeError('Setting the is_toggle_on attr is forbidden')
 
-    def update_from_yaml_object(self, yaml_object):
-        super().update_from_yaml_object(yaml_object)
+    def validate_from_yaml(self, value):
 
-    def validate_and_update(self, form):
-        super().validate_and_update(form)
+        if not isinstance(value, bool):
+            return {
+                "error": "Error at reading the hardware_acceleration from the config file. "
+                         "Wrong hardware_acceleration value. Please use a boolean value"}
 
-    def validate(self):
-        pass
+        return value
 
-    def update(self, form):
-        pass
+    def validate(self, value):
+        return value == 'on'
+
+    def update(self, is_hardware_acceleration_toggle_on: bool):
+        self._is_hardware_acceleration_toggle_on = is_hardware_acceleration_toggle_on
 
     def as_dict(self) -> dict:
-        return {"hardware_acceleration": self._is_use_hardware_acceleration}
+        return {"hardware_acceleration": self._is_hardware_acceleration_toggle_on}

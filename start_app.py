@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 # https://stackoverflow.com/questions/4646659/how-to-convert-the-django-web-application-into-the-desktop-application
 
 def start_webview():
-    dotenv_path = join(dirname(__file__), '.env')
+    dotenv_path = join(dirname(__file__), 'app/.env')
     load_dotenv(dotenv_path)
 
     port = os.environ.get("PORT")
