@@ -4,7 +4,6 @@ from os.path import join, dirname
 from dotenv import load_dotenv
 from flask import Flask
 from app.routes import ApiController
-import webbrowser
 
 dir_name = os.path.dirname(__file__)
 os.environ["PYTHONPATH"] = dir_name
