@@ -65,8 +65,8 @@ class UsersSection(ConfigurationSection):
 
         return [User(UserTypes.get_by_name(user['type']), user['email'], user['password']) for user in users]
 
-    def update(self, users):
-        pass
+    def update(self, users):  # need to change implementation?
+        self._users = users
 
     def add_user(self, user_type: UserTypes, email: str, password: str):
         error_prefix = "Error at adding a new user"
