@@ -9,6 +9,14 @@ pip install -r "requirements.txt"
 cd app 
 ```
 
+You can install the requirements within venv as well:
+```
+python -m venv venv
+venv\Scripts\activate
+pip install -r "requirements.txt"
+cd app
+```
+
 Then create ```.env``` to have:
 
 ```
