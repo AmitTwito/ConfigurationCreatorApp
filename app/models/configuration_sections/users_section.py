@@ -25,29 +25,40 @@ class UsersSection(ConfigurationSection):
     def validate_from_yaml(self, users):
         error = "Error at reading users from the config file the: "
         theres_any_error = False
+        theres_any_error_with_a_user = False
         if not isinstance(users, list):
-            error += "Users need to be a list of users, containing valid 'type', 'email', 'password'"
+            error += "\nUsers need to be a list of users, containing valid 'type', 'email', 'password'."
             theres_any_error = True
         for user in users:
-            if any(prop not in user for prop in ['type', 'email', 'password']):
-                error += "At least one of the users is missing 'type' or 'email' or 'password' "
+            if theres_any_error_with_a_user:
+                break
+            if not isinstance(user, dict):
+                error += "\nEach user needs to be in the format: \n-email: XXXXX\npassword: XXXXX\ntype: XXXXX."
                 theres_any_error = True
+                theres_any_error_with_a_user = True
+            if any(prop not in user for prop in ['type', 'email', 'password']):
+                error += "\nAt least one of the users is missing 'type' or 'email' or 'password'. "
+                theres_any_error = True
+                theres_any_error_with_a_user = True
             if 'email' in user:
                 email = user['email']
                 if not InputValidator.is_email_valid(email):
-                    error += f'The email {email} is not valid.'
+                    error += f'\nThe email {email} is not valid.'
                     theres_any_error = True
+                    theres_any_error_with_a_user = True
             if 'type' in user:
                 user_type = user['type']
                 if not UserTypes.get_by_name(user_type):
                     types = [user_type.name for user_type in UserTypes]
-                    error += f'The user type {user_type} is not valid. please choose from within {types}'
+                    error += f'\nThe user type {user_type} is not valid. please choose from within {types}'
                     theres_any_error = True
+                    theres_any_error_with_a_user = True
             if 'password' in user:
                 password = user['password']
                 if not InputValidator.is_password_valid(password):
-                    error += f'The password {password} is not valid.'
+                    error += f'\nThe password {password} is not valid.'
                     theres_any_error = True
+                    theres_any_error_with_a_user = True
 
         if theres_any_error:
             return {"error": error}

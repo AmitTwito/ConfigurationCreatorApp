@@ -10,7 +10,7 @@ class TestsSection(ConfigurationSection):
         self._max_tests_number = max_tests_number
         self._form_keys = [{"key": "selected-tests", "is_collection": True}]
 
-    def validate(self, tests: []):
+    def validate(self, tests: list):
         if not tests:
             return []
 
@@ -34,7 +34,7 @@ class TestsSection(ConfigurationSection):
             return {"error": error}
         return tests
 
-    def validate_from_yaml(self, tests: []):
+    def validate_from_yaml(self, tests: list):
         if not tests:
             return []
 
