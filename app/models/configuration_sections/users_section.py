@@ -54,7 +54,7 @@ class UsersSection(ConfigurationSection):
 
         return [User(UserTypes.get_by_name(user['type']), user['email'], user['password']) for user in users]
 
-    def update(self, users=list[User]):
+    def update(self, users):
         pass
 
     def add_user(self, user_type: UserTypes, email: str, password: str):

@@ -18,7 +18,7 @@ def start_webview():
     load_dotenv(dotenv_path)
 
     port = os.environ.get("PORT")
-    if int(port) < 0:
+    if int(port) < 0 or int(port) > 65536:
         print("Port number needs to be positive, 0 to 65536,")
         sys.exit(0)
     window = webview.create_window('Configuration Creator', f'http://localhost:{port}/', confirm_close=True, width=1200,
