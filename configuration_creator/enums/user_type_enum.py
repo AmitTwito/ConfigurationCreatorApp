@@ -1,4 +1,4 @@
-from app.enums.base_enum import BaseEnum
+from configuration_creator.enums.base_enum import BaseEnum
 
 
 class UserTypes(BaseEnum):

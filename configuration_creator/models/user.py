@@ -1,4 +1,4 @@
-from app.enums.user_type_enum import UserTypes
+from configuration_creator.enums.user_type_enum import UserTypes
 
 
 class User(object):

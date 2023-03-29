@@ -1,5 +1,5 @@
-from app.enums.configuration_section_enum import ConfigurationSections
-from app.models.configuration_sections.configuration_section import ConfigurationSection
+from configuration_creator.enums.configuration_section_enum import ConfigurationSections
+from configuration_creator.models.configuration_sections.configuration_section import ConfigurationSection
 
 
 class TestsSection(ConfigurationSection):

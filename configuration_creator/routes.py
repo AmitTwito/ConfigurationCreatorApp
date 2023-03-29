@@ -1,6 +1,6 @@
-from app.enums.configuration_section_enum import ConfigurationSections
-from app.models.business_logic import BusinessLogic
-from app.models.logger import LogTypes
+from configuration_creator.enums.configuration_section_enum import ConfigurationSections
+from configuration_creator.business_logic import BusinessLogic
+from configuration_creator.models.logger import LogTypes
 from flask import render_template, request, redirect
 
 

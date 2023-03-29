@@ -1,18 +1,18 @@
 import yaml
 
-from app.enums.configuration_section_enum import ConfigurationSections
-from app.enums.user_type_enum import UserTypes
-from app.models.configuration_sections.mode_section import ModeSection
-from app.models.configuration_sections.users_section import UsersSection
-from app.models.configuration_sections.hardware_acceleration_section import HardwareAccelerationSection
-from app.models.configuration_sections.tests_section import TestsSection
-from app.models.configuration_sections.report_background_image_section import ReportBackgroundImageSection
-
-DEFAULT_CONFIG_PATH = "config.yaml"
+from configuration_creator.enums.configuration_section_enum import ConfigurationSections
+from configuration_creator.enums.user_type_enum import UserTypes
+from configuration_creator.models.configuration_sections.mode_section import ModeSection
+from configuration_creator.models.configuration_sections.users_section import UsersSection
+from configuration_creator.models.configuration_sections.hardware_acceleration_section import \
+    HardwareAccelerationSection
+from configuration_creator.models.configuration_sections.tests_section import TestsSection
+from configuration_creator.models.configuration_sections.report_background_image_section import \
+    ReportBackgroundImageSection
 
 
 class Configuration:
-    def __init__(self, max_tests_number, config_section_to_template: dict, file_path=DEFAULT_CONFIG_PATH, ):
+    def __init__(self, max_tests_number, config_section_to_template: dict, file_path, ):
         self._sections = [
             ModeSection(ConfigurationSections.MODE, config_section_to_template[ConfigurationSections.MODE]),
             TestsSection(ConfigurationSections.TESTS, config_section_to_template[ConfigurationSections.TESTS],

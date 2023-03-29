@@ -1,6 +1,6 @@
-from app.enums.configuration_section_enum import ConfigurationSections
-from app.models.configuration_sections.configuration_section import ConfigurationSection
-from app.utils.input_validator import InputValidator
+from configuration_creator.enums.configuration_section_enum import ConfigurationSections
+from configuration_creator.models.configuration_sections.configuration_section import ConfigurationSection
+from configuration_creator.utils.input_validator import InputValidator
 
 
 class ReportBackgroundImageSection(ConfigurationSection):

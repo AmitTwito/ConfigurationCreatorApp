@@ -1,27 +1,28 @@
+import os
 import random
 
 import yaml
 
-# from app.models.configuration import Configuration, Modes, DEFAULT_CONFIG_PATH
-from app.enums.mode_enum import Modes
-from app.models.configuration import Configuration, DEFAULT_CONFIG_PATH
-from app.enums.configuration_section_enum import ConfigurationSections
-from app.models.logger import Logger, LogTypes
-from app.models.user import UserTypes
-
-DEFAULT_RANDOM_SECTIONS_NUMBER = 3
-DEFAULT_TESTS_NUMBER = 10
+from configuration_creator.enums.mode_enum import Modes
+from configuration_creator.models.configuration import Configuration
+from configuration_creator.enums.configuration_section_enum import ConfigurationSections
+from configuration_creator.models.logger import Logger, LogTypes
+from configuration_creator.models.user import UserTypes
+from .defaults import DEFAULT_CONFIG_PATH, DEFAULT_RANDOM_SECTIONS_NUMBER, DEFAULT_MAX_TESTS_NUMBER
 
 
 class BusinessLogic:
-    def __init__(self, config_file_path=DEFAULT_CONFIG_PATH, max_tests_number=DEFAULT_TESTS_NUMBER,
+    def __init__(self, config_file_path=DEFAULT_CONFIG_PATH, max_tests_number=DEFAULT_MAX_TESTS_NUMBER,
                  number_of_sections_to_randomize=DEFAULT_RANDOM_SECTIONS_NUMBER):
         self._config_section_to_template = {ConfigurationSections.MODE: "mode.html",
                                             ConfigurationSections.TESTS: "tests.html",
                                             ConfigurationSections.USERS: "users_table.html",
                                             ConfigurationSections.REPORT_BACKGROUND_IMAGE: "report_background_image.html",
-                                            ConfigurationSections.HARDWARE_ACCELERATION: "hardware_acceleration.html",
-                                            }
+                                            ConfigurationSections.HARDWARE_ACCELERATION: "hardware_acceleration.html", }
+        self._logger = Logger()
+
+        max_tests_number = self._validate_parameters(max_tests_number, number_of_sections_to_randomize)
+
         self._configuration = Configuration(config_section_to_template=self._config_section_to_template,
                                             file_path=config_file_path,
                                             max_tests_number=max_tests_number)
@@ -29,12 +30,33 @@ class BusinessLogic:
         self.log_type_colors = {LogTypes.MESSAGE: "black", LogTypes.ERROR: "red"}
         self.config_options = {"modes": Modes, "user_types": UserTypes,
                                "all_tests": list(range(1, max_tests_number + 1)), }
-        self._number_of_sections_to_randomize = number_of_sections_to_randomize
 
         self._random_sections, self._rest_of_the_sections = [], []
-        self._logger = Logger()
-        self._start_logging_and_load_config(max_tests_number=max_tests_number, wanted_config_file_path=config_file_path)
+        self._start_logging_and_load_config(wanted_config_file_path=config_file_path)
         self._generate_random_sections_to_display(number_of_sections_to_randomize)
+
+    def _validate_parameters(self, max_tests_number: int, number_of_sections_to_randomize: int, ):
+        if number_of_sections_to_randomize > len(ConfigurationSections):
+            self._logger.add_log("Number of sections to randomly present needs to be 5 or less.", LogTypes.ERROR)
+            self._logger.add_log(
+                f"The number is set to {DEFAULT_RANDOM_SECTIONS_NUMBER} as default", LogTypes.MESSAGE)
+            self._logger.add_log(
+                "Please make sure to use valid number.", LogTypes.MESSAGE)
+            self.number_of_sections_to_randomize = DEFAULT_RANDOM_SECTIONS_NUMBER
+        else:
+            self._number_of_sections_to_randomize = number_of_sections_to_randomize
+
+        if max_tests_number < 0:
+            self._logger.add_log(
+                f"Max tests number needs to be positive.setting max tests to {DEFAULT_RANDOM_SECTIONS_NUMBER}",
+                LogTypes.ERROR)
+            max_tests_number = DEFAULT_MAX_TESTS_NUMBER
+        else:
+            self._logger.add_log(
+                f"Max tests number is set to {max_tests_number}",
+                LogTypes.MESSAGE)
+
+        return max_tests_number
 
     @property
     def configuration(self):
@@ -66,11 +88,8 @@ class BusinessLogic:
     def add_log(self, text: str, log_type: LogTypes):
         self._logger.add_log(text, log_type)
 
-    def _start_logging_and_load_config(self, max_tests_number, wanted_config_file_path):
+    def _start_logging_and_load_config(self, wanted_config_file_path):
         self._logger.add_log("Script started running", LogTypes.MESSAGE)
-        self._logger.add_log(
-            f"Max tests number is set to {max_tests_number}",
-            LogTypes.MESSAGE)
         self._logger.add_log(
             f"Trying to read config file at {wanted_config_file_path}, the default is {DEFAULT_CONFIG_PATH}",
             LogTypes.MESSAGE)
@@ -81,7 +100,8 @@ class BusinessLogic:
             if output:  # there are errors
                 self.add_log("There are few value errors in the config file:", log_type=LogTypes.ERROR)
                 for error in output:
-                    self.add_log(error["error"], log_type=LogTypes.ERROR)
+                    error = error["error"]
+                    self.add_log(f"{error} \n {error_suffix}", log_type=LogTypes.ERROR)
             else:
                 self._logger.add_log("Successfully read config file.", LogTypes.MESSAGE)
         except FileNotFoundError as e:
@@ -99,14 +119,6 @@ class BusinessLogic:
             f"Number of random configuration sections to generate is set to {number_of_sections_to_randomize}",
             LogTypes.MESSAGE)
         self._logger.add_log("Generating random configuration sections...", LogTypes.MESSAGE)
-        if self.number_of_sections_to_randomize > len(ConfigurationSections):
-            self._logger.add_log("Number of sections to randomly present needs to be 5 or less.", LogTypes.ERROR)
-            self._logger.add_log(
-                f"The number is set to {DEFAULT_RANDOM_SECTIONS_NUMBER} as default", LogTypes.MESSAGE)
-            self._logger.add_log(
-                "Please make sure to use valid number.", LogTypes.MESSAGE)
-            self.number_of_sections_to_randomize = DEFAULT_RANDOM_SECTIONS_NUMBER
-
         self._random_sections = random.sample(self._configuration.sections, self.number_of_sections_to_randomize)
         self._random_sections.sort(key=lambda section: section.configuration_section_type.value)
         self._rest_of_the_sections = list(set(self._configuration.sections) - set(self._random_sections))

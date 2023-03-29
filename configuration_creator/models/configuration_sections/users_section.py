@@ -1,8 +1,17 @@
-from app.enums.configuration_section_enum import ConfigurationSections
-from app.enums.user_type_enum import UserTypes
-from app.models.configuration_sections.configuration_section import ConfigurationSection
-from app.models.user import User
-from app.utils.input_validator import InputValidator
+from configuration_creator.enums.configuration_section_enum import ConfigurationSections
+from configuration_creator.enums.user_type_enum import UserTypes
+from configuration_creator.models.configuration_sections.configuration_section import ConfigurationSection
+from configuration_creator.models.user import User
+from configuration_creator.utils.input_validator import InputValidator
+
+
+def get_emails_and_duplicates_from_users(users):
+    emails_list = [user["email"] for user in users]
+    emails = set()
+    dup_emails = set()
+    for email in emails_list:
+        dup_emails.add(email) if email in emails else emails.add(email)
+    return dup_emails, emails
 
 
 class UsersSection(ConfigurationSection):
@@ -10,6 +19,7 @@ class UsersSection(ConfigurationSection):
     def __init__(self, configuration_section_type: ConfigurationSections, template_file: str):
         super().__init__(configuration_section_type, template_file)
         self._users = []
+        self._emails = set()
         # self._form_keys = {"key": "", "is_collection": True}
 
     @property
@@ -60,13 +70,19 @@ class UsersSection(ConfigurationSection):
                     theres_any_error = True
                     theres_any_error_with_a_user = True
 
+        dup_emails, emails = get_emails_and_duplicates_from_users(users)
+        if dup_emails:
+            error += f"\nThere are duplicate emails, each user needs to have a unique email address. " \
+                     f"duplicates:{list(dup_emails)} "
+            theres_any_error = True
+
         if theres_any_error:
             return {"error": error}
 
-        return [User(UserTypes.get_by_name(user['type']), user['email'], user['password']) for user in users]
+        return [User(UserTypes.get_by_name(user['type']), user['email'], user['password']) for user in users], emails
 
-    def update(self, users):  # need to change implementation?
-        self._users = users
+    def update(self, users_and_emails):  # need to change implementation?
+        self._users, self._emails = users_and_emails[0], users_and_emails[1]
 
     def add_user(self, user_type: UserTypes, email: str, password: str):
         error_prefix = "Error at adding a new user"
@@ -80,6 +96,9 @@ class UsersSection(ConfigurationSection):
         elif not InputValidator.is_email_valid(email):
             raise ValueError(
                 f"{error_prefix}. The email '{email}' has a wrong format, Please insert valid email address.")
+        if email in self._emails:
+            raise ValueError(
+                f"{error_prefix}. The email '{email}' already exists, Please insert a different email address.")
 
         self._users.append(User(user_type, email, password))
 

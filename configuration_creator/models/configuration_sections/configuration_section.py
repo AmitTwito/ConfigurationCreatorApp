@@ -1,4 +1,4 @@
-from app.enums.configuration_section_enum import ConfigurationSections
+from configuration_creator.enums.configuration_section_enum import ConfigurationSections
 
 
 class ConfigurationSection(object):

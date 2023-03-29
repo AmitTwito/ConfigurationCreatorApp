@@ -1,6 +1,6 @@
-from app.enums.configuration_section_enum import ConfigurationSections
-from app.enums.mode_enum import Modes
-from app.models.configuration_sections.configuration_section import ConfigurationSection
+from configuration_creator.enums.configuration_section_enum import ConfigurationSections
+from configuration_creator.enums.mode_enum import Modes
+from configuration_creator.models.configuration_sections.configuration_section import ConfigurationSection
 
 
 class ModeSection(ConfigurationSection):
