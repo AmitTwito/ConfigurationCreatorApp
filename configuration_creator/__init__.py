@@ -39,6 +39,6 @@ class ConfigurationCreatorApp:
 
     def _start_webview(self, port, width, height):
         window = webview.create_window('Configuration Creator', f'http://{self._host}:{port}/', confirm_close=True,
-                                       width=width, height=height, )
+                                       width=width, height=height)
         window.events.closed += self._stop_app
         webview.start()

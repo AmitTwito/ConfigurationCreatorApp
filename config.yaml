@@ -14,5 +14,5 @@ tests:
 - 10
 users:
 - email: asdsa@asdsa.com
-  password: sadas
+  password: sadsadas
   type: Standard

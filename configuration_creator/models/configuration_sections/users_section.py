@@ -100,12 +100,14 @@ class UsersSection(ConfigurationSection):
             raise ValueError(
                 f"{error_prefix}. The email '{email}' already exists, Please insert a different email address.")
 
+        self._emails.add(email)
         self._users.append(User(user_type, email, password))
 
     def delete_user(self, user_id):
         user_id = int(user_id) - 1
         if user_id < 0 or user_id >= len(self._users):
             raise IndexError(f"Error in deleting user with id {user_id} as it does not exist.")
+        self._emails.remove(self._users[user_id].email)
         del self._users[user_id]
 
     def as_dict(self) -> dict:
