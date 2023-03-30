@@ -114,7 +114,6 @@ class BusinessLogic:
             m = f"{error_prefix}: {e}. {error_suffix}"
             self._logger.add_log(m, LogTypes.ERROR)
             self._logger.add_log(f"{str(e)} \n{error_suffix}", LogTypes.ERROR)
-            self._configuration.config_file_path = DEFAULT_CONFIG_PATH
 
     def _generate_random_sections_to_display(self, number_of_sections_to_randomize):
         self._logger.add_log(
