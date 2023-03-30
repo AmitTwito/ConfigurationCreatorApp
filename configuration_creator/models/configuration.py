@@ -9,7 +9,7 @@ from configuration_creator.models.configuration_sections.hardware_acceleration_s
 from configuration_creator.models.configuration_sections.tests_section import TestsSection
 from configuration_creator.models.configuration_sections.report_background_image_section import \
     ReportBackgroundImageSection
-from defaults import DEFAULT_CONFIG_PATH
+from configuration_creator.defaults import DEFAULT_CONFIG_PATH
 
 
 class Configuration:
