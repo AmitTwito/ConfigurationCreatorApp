@@ -7,7 +7,7 @@
 </div>
 <hr>
 {% endfor %}
-<form method="post" action="{{'/last_configurations' if state.number_of_sections_to_randomize < state.sections_number else '/finish'}}" id="save-config-form">
+<form method="post" action="{{'/last_configurations' if 0 < state.number_of_sections_to_randomize < state.sections_number else '/finish'}}" id="save-config-form">
     <button type="submit" class="btn btn-success" style="float: right;" form="save-config-form">{{'Next' if state.number_of_sections_to_randomize < state.sections_number else 'Finish'}}</button>
     <br>
 </form>

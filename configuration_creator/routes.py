@@ -38,13 +38,14 @@ class ApiController:
             if self.bl.number_of_sections_to_randomize == len(ConfigurationSections):
                 is_randomized_sections = True
             try:
-                self.bl.validate_and_update_config(is_randomized_sections=is_randomized_sections, request_form=request.form)
+                self.bl.validate_and_update_config(is_randomized_sections=is_randomized_sections,
+                                                   request_form=request.form)
                 self.bl.save_config_to_file()
             except Exception as e:
                 print('Error on POST request /finish: ')
                 self.bl.add_log(f"{str(e)}", LogTypes.ERROR)
 
-            return redirect('/last_configurations') if self.bl.number_of_sections_to_randomize < len(
+            return redirect('/last_configurations') if 0 < self.bl.number_of_sections_to_randomize < len(
                 ConfigurationSections) else redirect('/')
 
         @app.route('/users/delete/<user_id>')

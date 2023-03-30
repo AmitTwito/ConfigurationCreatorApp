@@ -15,5 +15,9 @@
     </div>
     {% endfor %}
     <br>
+    {% if state.are_all_tests_selected %}
+    <input type="checkbox" name="select-all-tests" checked="checked" onClick="selectAll()"/> Select All<br/>
+    {% else %}
     <input type="checkbox" name="select-all-tests" onClick="selectAll()"/> Select All<br/>
+    {% endif %}
 </div>

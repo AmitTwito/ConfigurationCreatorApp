@@ -9,10 +9,11 @@ from configuration_creator.models.configuration_sections.hardware_acceleration_s
 from configuration_creator.models.configuration_sections.tests_section import TestsSection
 from configuration_creator.models.configuration_sections.report_background_image_section import \
     ReportBackgroundImageSection
+from defaults import DEFAULT_CONFIG_PATH
 
 
 class Configuration:
-    def __init__(self, max_tests_number, config_section_to_template: dict, file_path, ):
+    def __init__(self, max_tests_number: int, config_section_to_template: dict, file_path: str, ):
         self._sections = [
             ModeSection(ConfigurationSections.MODE, config_section_to_template[ConfigurationSections.MODE]),
             TestsSection(ConfigurationSections.TESTS, config_section_to_template[ConfigurationSections.TESTS],
@@ -37,6 +38,14 @@ class Configuration:
     def sections(self, value):
         raise AttributeError("Setting the sections attr is forbidden")
 
+    @property
+    def config_file_path(self):
+        return self._config_file_path
+
+    @config_file_path.setter
+    def config_file_path(self, value):
+        raise AttributeError("Setting the config_file_path attr is forbidden")
+
     def as_dict(self):
         config_dict = {}
         section_dicts = [section.as_dict() for section in self._sections]
@@ -46,10 +55,14 @@ class Configuration:
         return config_dict
 
     def read_from_file(self, ):
-        with open(self._config_file_path, "r") as file:
-            yaml_object = yaml.safe_load(file)
-            self._check_missing_sections_existence(yaml_object)
-            return self.from_yaml_object(yaml_object)
+        try:
+            with open(self._config_file_path, "r") as file:
+                yaml_object = yaml.safe_load(file)
+                self._check_missing_sections_existence(yaml_object)
+                return self.from_yaml_object(yaml_object)
+        except Exception as e:
+            self._config_file_path = DEFAULT_CONFIG_PATH
+            raise e
 
     def _check_missing_sections_existence(self, yaml_object):
         missing_valid_keys_error_message = f"The config file {self._config_file_path} is missing the following " \
