@@ -6,7 +6,7 @@
   image and put it in the textbox.
 
 
-## How to run:
+## How to run
 
 Open CMD in the main folder, then:
 
