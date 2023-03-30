@@ -2,9 +2,13 @@
 
 - The application works on python 3.6.8.
 - Used flask and pywebview to display the web application inside a normal window and not a browser.
-- The app cannot select a report background image and get its path as it is not possible (web application), so it will get the name of the
-  image and put it in the textbox.
+- The app cannot select a report background image and get its path as it is not possible (web application), so it will
+  get the name of the image and put it in the textbox.
 
+## The App
+
+A simple web-based application written in python using flask, that gives the user options for setting a configuration
+and then saves the configurations into a ```config.yaml``` file.
 
 ## How to run
 
