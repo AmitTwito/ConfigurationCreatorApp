@@ -122,7 +122,7 @@ class BusinessLogic:
         self._logger.add_log("Generating random configuration sections...", LogTypes.MESSAGE)
 
         self._random_sections = random.sample(self._configuration.sections, self.number_of_sections_to_randomize)
-        if number_of_sections_to_randomize is not 5:
+        if number_of_sections_to_randomize != 5:
             self._random_sections.sort(key=lambda section: section.configuration_section_type.value)
         self._rest_of_the_sections = list(set(self._configuration.sections) - set(self._random_sections))
         self._logger.add_log(
