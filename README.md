@@ -64,6 +64,8 @@ configuration_creator_app.run(config_file_path=config_file_path, max_tests_numbe
 
 On exit, the program will be terminated entirely.
 
+## config.yaml
+
 See the ```config.yaml``` file in the main directory as an example. file parameters:
 
 - If no users or tests wanted in the config, set them as ```[]```
