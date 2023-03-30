@@ -67,4 +67,3 @@ See the ```config.yaml``` file in the main directory as an example. file paramet
 - ```report_background_image``` is a string, a valid path for a report background image. if only a name of an image is
   set, it will search the main folder of this repo.
 - ```mode``` is either ```Debug``` or ```Production```
-- The config file needs to be outside the folder ```configuration_creator```
