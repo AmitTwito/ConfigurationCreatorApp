@@ -15,7 +15,7 @@ and then saves the configurations into a ```config.yaml``` file.
 Open CMD in the main folder, then:
 
 ```
-pip install -r "requirements.txt"
+pip install -r requirements.txt
 ```
 
 You can install the requirements within venv as well:
