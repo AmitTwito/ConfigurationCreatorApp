@@ -1,5 +1,5 @@
 hardware_acceleration: true
-mode: Debug
+mode: Production
 report_background_image: asd.png
 tests:
 - 1
@@ -14,5 +14,6 @@ tests:
 - 10
 users:
 - email: asdsa@asdsa.com
-  password: sadsadas
+  password: sadas
   type: Standard
+
