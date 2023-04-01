@@ -2,6 +2,7 @@
 
 - The application works on python 3.6.8.
 - Used flask and pywebview to display the web application inside a normal window and not a browser.
+- Make sure to reinstall ```requirements.txt``` when repulling this repo
 - The app cannot select a report background image and get its path as it is not possible (web application), so it will
   get the name of the image and put it in the textbox.
 - If you choose 0 as the number of sections to randomize, it will be reset to default (```defaults.py``` file). if you choose 5 - it will dispaly only one page with 5 of the sections.
