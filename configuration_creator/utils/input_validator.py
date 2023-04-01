@@ -18,4 +18,4 @@ class InputValidator:
 
     @classmethod
     def is_password_valid(cls, password):
-        return password != ""
+        return password

@@ -10,6 +10,8 @@ from configuration_creator.models.configuration_sections.tests_section import Te
 from configuration_creator.models.configuration_sections.report_background_image_section import \
     ReportBackgroundImageSection
 from configuration_creator.defaults import DEFAULT_CONFIG_PATH
+from utils.errors.configuration_creator_error import ConfigurationCreatorError
+from utils.errors.yaml_validation_error import YamlValidationError
 
 
 class Configuration:
@@ -54,26 +56,28 @@ class Configuration:
                 config_dict[k] = v
         return config_dict
 
-    def read_from_file(self, ):
+    def load_from_file(self, ):
         try:
             with open(self._config_file_path, "r") as file:
                 yaml_object = yaml.safe_load(file)
-                self._check_missing_sections_existence(yaml_object)
+                self._check_missing_sections_existence_from_yaml(yaml_object)
                 return self.from_yaml_object(yaml_object)
+        except ConfigurationCreatorError as e:
+            self._config_file_path = DEFAULT_CONFIG_PATH
+            raise ConfigurationCreatorError(f"{e.__class__.__name__}", e.errors)
         except Exception as e:
             self._config_file_path = DEFAULT_CONFIG_PATH
-            raise e
+            raise Exception(f"{e.__class__.__name__}: {str(e)}")
 
-    def _check_missing_sections_existence(self, yaml_object):
-        missing_valid_keys_error_message = f"The config file {self._config_file_path} is missing the following " \
-                                           f"sections:"
+    def _check_missing_sections_existence_from_yaml(self, yaml_object):
+        missing_valid_keys_error_message = f"The config file {self._config_file_path} is missing the following sections:"
         yaml_config_file_keys = [section.name_lower_case for section in ConfigurationSections]
         missing_keys = []
         for key in yaml_config_file_keys:
             if key not in yaml_object:
                 missing_keys.append(key)
         if missing_keys:
-            raise KeyError(f"{missing_valid_keys_error_message} {missing_keys}")
+            raise YamlValidationError(f"{missing_valid_keys_error_message} {missing_keys}")
 
     def save_to_file(self):
         yaml_object = yaml.dump(self.as_dict())
@@ -86,8 +90,9 @@ class Configuration:
             yaml_key = section.configuration_section_type.name_lower_case
             output = section.validate_and_update_from_yaml(yaml_object[yaml_key])
             if isinstance(output, dict) and "error" in output:
-                errors.append(output)
-        return errors
+                errors.append(output["error"])
+        if errors:
+            raise YamlValidationError("Config file values validation errors:", errors=errors)
 
     def add_user(self, user_type: UserTypes, email: str, password: str):
         users_section = self._sections[ConfigurationSections.USERS.value]
@@ -95,4 +100,5 @@ class Configuration:
 
     def delete_user(self, user_id):
         users_section = self._sections[ConfigurationSections.USERS.value]
-        users_section.delete_user(user_id)
+        return users_section.delete_user(user_id)
+

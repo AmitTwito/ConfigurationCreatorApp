@@ -1,6 +1,7 @@
 from configuration_creator.enums.configuration_section_enum import ConfigurationSections
 from configuration_creator.models.configuration_sections.configuration_section import ConfigurationSection
 from configuration_creator.utils.input_validator import InputValidator
+from utils.errors.value_validation_error import ValueValidationError
 
 
 class ReportBackgroundImageSection(ConfigurationSection):
@@ -11,18 +12,16 @@ class ReportBackgroundImageSection(ConfigurationSection):
         self._form_keys = [{"key": "image-path", "is_collection": False}]
 
     def validate(self, path: str):
-
         if not InputValidator.is_file_path_valid_image(path):
-            return {"error":
-                        f"Error at updating the image path. The image path '{path}' is not a valid image, or does not "
-                        f"exist. Please insert a valid existing image path"}
+            raise ValueValidationError(
+                f"Error at updating the image path. The image path '{path}' is not a valid image, or does not "
+                f"exist. Please insert a valid existing image path")
         return path
 
     def validate_from_yaml(self, path: str):
         if not InputValidator.is_file_path_valid_image(path):
-            return {"error":
-                        f"Error at reading the image path from the config file. The image path '{path}' is not a "
-                        f"valid image, or does not exist. Please insert a valid existing image path"}
+            return {"error": f"Error at reading the image path from the config file. The image path '{path}' is not a "
+                             f"valid image, or does not exist. Please insert a valid existing image path"}
         return path
 
     def update(self, path: str):

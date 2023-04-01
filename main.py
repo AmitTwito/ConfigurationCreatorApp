@@ -2,7 +2,7 @@ from configuration_creator import ConfigurationCreatorApp
 
 port = 5000
 config_file_path = "config.yaml"
-number_of_sections_to_randomize = 3
+number_of_sections_to_randomize = 5
 max_tests_number = 10
 
 configuration_creator_app = ConfigurationCreatorApp()

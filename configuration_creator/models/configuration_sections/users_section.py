@@ -3,6 +3,9 @@ from configuration_creator.enums.user_type_enum import UserTypes
 from configuration_creator.models.configuration_sections.configuration_section import ConfigurationSection
 from configuration_creator.models.user import User
 from configuration_creator.utils.input_validator import InputValidator
+from utils.errors.user_creation_error import UserAdditionError
+from utils.errors.user_deletion_error import UserDeletionError
+from utils.errors.value_validation_error import ValueValidationError
 
 
 def get_emails_and_duplicates_from_users(users):
@@ -33,7 +36,7 @@ class UsersSection(ConfigurationSection):
         pass
 
     def validate_from_yaml(self, users):
-        error = "Error at reading users from the config file the: "
+        error = "Error at reading users from the config file: "
         theres_any_error = False
         theres_any_error_with_a_user = False
         if not isinstance(users, list):
@@ -86,29 +89,38 @@ class UsersSection(ConfigurationSection):
 
     def add_user(self, user_type: UserTypes, email: str, password: str):
         error_prefix = "Error at adding a new user"
-        if not InputValidator.is_email_valid(email) and not InputValidator.is_password_valid(password):
-            raise ValueError(
-                f"{error_prefix}. The email '{email}' has a wrong format, and the password is empty. Please insert "
-                f"valid values.")
-        elif not InputValidator.is_password_valid(password):
-            raise ValueError(
-                f"{error_prefix}. The password inserted is empty, please insert a valid password")
-        elif not InputValidator.is_email_valid(email):
-            raise ValueError(
-                f"{error_prefix}. The email '{email}' has a wrong format, Please insert valid email address.")
-        if email in self._emails:
-            raise ValueError(
-                f"{error_prefix}. The email '{email}' already exists, Please insert a different email address.")
+        try:
+            error_message = ""
+            if not InputValidator.is_email_valid(email) and not InputValidator.is_password_valid(password):
+                error_message = f"{error_prefix}. The email '{email}' has a wrong format, and the password is empty. " \
+                                f"Please insert valid values."
+            elif not InputValidator.is_password_valid(password):
+                error_message = f"{error_prefix}. The password inserted is empty, please insert a valid password"
+            elif not InputValidator.is_email_valid(email):
+                error_message = f"{error_prefix}. The email '{email}' has a wrong format, " \
+                                f"Please insert valid email address."
+            if email in self._emails:
+                error_message = f"{error_prefix}. The email '{email}' already exists, " \
+                                f"Please insert a different email address."
+            if error_message:
+                raise ValueValidationError(error_message)
+        except ValueValidationError as e:
+            raise UserAdditionError(str(e))
 
         self._emails.add(email)
         self._users.append(User(user_type, email, password))
 
     def delete_user(self, user_id):
-        user_id = int(user_id) - 1
-        if user_id < 0 or user_id >= len(self._users):
-            raise IndexError(f"Error in deleting user with id {user_id} as it does not exist.")
-        self._emails.remove(self._users[user_id].email)
-        del self._users[user_id]
+        try:
+            user_id = int(user_id) - 1
+            if user_id < 0 or user_id >= len(self._users):
+                raise UserDeletionError(f"Error in deleting user with id {user_id} as it does not exist.")
+            email = self._users[user_id].email
+            self._emails.remove(email)
+            del self._users[user_id]
+            return email
+        except Exception as e:
+            raise UserDeletionError(str(e))
 
     def as_dict(self) -> dict:
         users = [{'type': user.type.name, 'email': user.email, 'password': user.password} for user in

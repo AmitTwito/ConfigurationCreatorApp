@@ -1,13 +1,13 @@
-import os
 import random
 
-import yaml
 
 from configuration_creator.enums.mode_enum import Modes
 from configuration_creator.models.configuration import Configuration
 from configuration_creator.enums.configuration_section_enum import ConfigurationSections
 from configuration_creator.models.logger import Logger, LogTypes
 from configuration_creator.models.user import UserTypes
+from utils.errors.configuration_creator_error import ConfigurationCreatorError
+from utils.errors.value_validation_error import ValueValidationError
 from .defaults import DEFAULT_CONFIG_PATH, DEFAULT_RANDOM_SECTIONS_NUMBER, DEFAULT_MAX_TESTS_NUMBER
 
 
@@ -63,98 +63,97 @@ class BusinessLogic:
     def get_logs(self):
         return self._logger.logs
 
-    def add_log(self, text: str, log_type: LogTypes):
-        self._logger.add_log(text, log_type)
+    def add_log(self, text: str, log_type: LogTypes, ex=None):
+        self._logger.add_message(text, ) if log_type == LogTypes.MESSAGE else self._logger.add_error(text, ex)
 
     def _validate_and_reset_parameters(self, max_tests_number: int, number_of_sections_to_randomize: int, ):
         if number_of_sections_to_randomize > len(ConfigurationSections) or number_of_sections_to_randomize <= 0:
-            self._logger.add_log("Number of sections to randomly present needs to be between 1 to 5", LogTypes.ERROR)
-            self._logger.add_log(
-                f"The number is set to {DEFAULT_RANDOM_SECTIONS_NUMBER} as default", LogTypes.MESSAGE)
-            self._logger.add_log(
-                "Please make sure to use valid number.", LogTypes.MESSAGE)
+            self._logger.add_error("Number of sections to randomly present needs to be between 1 to 5")
+            self._logger.add_error(
+                f"The number is set to {DEFAULT_RANDOM_SECTIONS_NUMBER} as default")
+            self._logger.add_error(
+                "Please make sure to use valid number.")
             number_of_sections_to_randomize = DEFAULT_RANDOM_SECTIONS_NUMBER
         else:
 
             number_of_sections_to_randomize = number_of_sections_to_randomize
 
         if max_tests_number < 0:
-            self._logger.add_log(
-                f"Max tests number needs to be positive.setting max tests to {DEFAULT_RANDOM_SECTIONS_NUMBER}",
-                LogTypes.ERROR)
+            self._logger.add_error(
+                f"Max tests number needs to be positive.setting max tests to {DEFAULT_RANDOM_SECTIONS_NUMBER}")
             max_tests_number = DEFAULT_MAX_TESTS_NUMBER
         else:
-            self._logger.add_log(
-                f"Max tests number is set to {max_tests_number}",
-                LogTypes.MESSAGE)
+            self._logger.add_message(
+                f"Max tests number is set to {max_tests_number}", )
 
         return max_tests_number, number_of_sections_to_randomize
 
     def _start_logging_and_load_config(self, wanted_config_file_path):
-        self._logger.add_log("Script started running", LogTypes.MESSAGE)
-        self._logger.add_log(
-            f"Trying to read config file at {wanted_config_file_path}, the default is {DEFAULT_CONFIG_PATH}",
-            LogTypes.MESSAGE)
+        self._logger.add_message("Script started running")
+        self._logger.add_message(
+            f"Trying to read config file at {wanted_config_file_path}, the default is {DEFAULT_CONFIG_PATH}", )
         error_prefix = "Problem at reading the config file"
         error_suffix = "Setting configuration to default"
         try:
-            output = self._configuration.read_from_file()
-            if output:  # there are errors in the config file
-                self.add_log("There are few value errors in the config file:", log_type=LogTypes.ERROR)
-                for error in output:
-                    error = error["error"]
-                    self.add_log(f"{error} \n {error_suffix}", log_type=LogTypes.ERROR)
-            else:
-                self._logger.add_log("Successfully read config file.", LogTypes.MESSAGE)
+            self._configuration.load_from_file()
+            self._logger.add_message("Successfully read config file.")
+        except ConfigurationCreatorError as e:
+            self._add_reading_config_file_error_to_log(e.errors, error_suffix=error_suffix, ex=e)
         except FileNotFoundError as e:
-            m = f"{error_prefix}: the file {wanted_config_file_path} does not exist or is not a valid yaml file. \n{error_suffix} "
-            self._logger.add_log(m, LogTypes.ERROR)
-            self._logger.add_log(f"{str(e)} \n{error_suffix}", LogTypes.ERROR)
+            error = f"{error_prefix}: the file {wanted_config_file_path} does not exist or is not a valid yaml file. " \
+                    f"\n{error_suffix} "
+            self._add_reading_config_file_error_to_log(error, ex=e)
         except Exception as e:
-            m = f"{error_prefix}: {e}. {error_suffix}"
-            self._logger.add_log(m, LogTypes.ERROR)
-            self._logger.add_log(f"{str(e)} \n{error_suffix}", LogTypes.ERROR)
+            error = f"{error_prefix}: {str(e)}. {error_suffix}"
+            self._add_reading_config_file_error_to_log(error, ex=e)
+
+    def _add_reading_config_file_error_to_log(self, error="", error_suffix="", ex=None):
+        self.add_log("There are few errors while reading config file:", log_type=LogTypes.ERROR)
+        if isinstance(error, list):
+            self._logger.add_errors(errors=error, error_suffix=error_suffix, ex=ex)
+        if isinstance(error, str):
+            self._logger.add_error(error, )
 
     def _generate_random_sections_to_display(self, number_of_sections_to_randomize):
-        self._logger.add_log(
-            f"Number of random configuration sections to generate is set to {number_of_sections_to_randomize}",
-            LogTypes.MESSAGE)
-        self._logger.add_log("Generating random configuration sections...", LogTypes.MESSAGE)
+        self._logger.add_message(
+            f"Number of random configuration sections to generate is set to {number_of_sections_to_randomize}", )
+        self._logger.add_message("Generating random configuration sections...", )
 
         self._random_sections = random.sample(self._configuration.sections, self.number_of_sections_to_randomize)
         if number_of_sections_to_randomize != 5:
             self._random_sections.sort(key=lambda section: section.configuration_section_type.value)
         self._rest_of_the_sections = list(set(self._configuration.sections) - set(self._random_sections))
-        self._logger.add_log(
-            f"Finished generating {self.number_of_sections_to_randomize} random configuration sections.",
-            LogTypes.MESSAGE)
+        self._logger.add_message(
+            f"Finished generating {self.number_of_sections_to_randomize} random configuration sections.", )
 
     def add_user(self, user_type, email: str, password: str):
         try:
             user_type = UserTypes(int(user_type) - 1)
             self._configuration.add_user(user_type, email, password)
-        except ValueError as e:
-            self._logger.add_log(str(e), LogTypes.ERROR)
+            self._logger.add_message(f"User with email {email} was added successfully")
+        except Exception as e:
+            self._logger.add_error(f"{e.__class__.__name__}: {str(e)}", ex=e)
 
         return self._get_page_for_redirection(ConfigurationSections.USERS)
 
     def delete_user(self, user_id):
         try:
-            self._configuration.delete_user(user_id)
+            email = self._configuration.delete_user(user_id)
+            self._logger.add_message(f"User with email {email} was deleted successfully")
+
         except Exception as e:
-            self._logger.add_log(f"Error deleting user with id {user_id}: {e}", LogTypes.ERROR)
+            self._logger.add_error(f"{e.__class__.__name__}: {str(e)}", ex=e)
 
         return self._get_page_for_redirection(ConfigurationSections.USERS)
 
     def save_config_to_file(self):
         try:
-            self._logger.add_log("Saving configuration to file...", LogTypes.MESSAGE)
+            self._logger.add_message("Saving configuration to file...", )
             self._configuration.save_to_file()
-            self._logger.add_log("Successfully saved configuration", LogTypes.MESSAGE)
-        except yaml.YAMLError as e:
-            raise Exception(f'Yaml Error while saving the configuration to file: {str(e)}')
+            self._logger.add_message("Successfully saved configuration", )
+
         except Exception as e:
-            raise Exception(f'Error saving the configuration to file: {str(e)}')
+            raise Exception(f'{e.__class__.__name__} saving the configuration to file: {str(e)}')
 
     def _get_page_for_redirection(self, configuration_section: ConfigurationSections):
         if configuration_section in [section.configuration_section_type for section in self.random_sections]:
@@ -185,10 +184,11 @@ class BusinessLogic:
                 key = form_key["key"]
                 value = request_form.get(key) if not form_key["is_collection"] else request_form.getlist(key)
                 if value is not None:
-                    output = config_section.validate_and_update(value)
-                    if isinstance(output, dict) and "error" in output:
-                        errors.append(output["error"])
+                    try:
+                        config_section.validate_and_update(value)
+                    except ValueValidationError as e:
+                        errors.append(str(e))
+
         if errors:
-            for error in errors:
-                self.add_log(error, LogTypes.ERROR)
-            raise ValueError("There are few validation errors")
+            self._logger.add_errors(errors)
+            raise ValueValidationError("There are few validation errors")

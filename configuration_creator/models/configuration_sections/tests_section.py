@@ -1,5 +1,6 @@
 from configuration_creator.enums.configuration_section_enum import ConfigurationSections
 from configuration_creator.models.configuration_sections.configuration_section import ConfigurationSection
+from utils.errors.value_validation_error import ValueValidationError
 
 
 class TestsSection(ConfigurationSection):
@@ -14,11 +15,11 @@ class TestsSection(ConfigurationSection):
         if not tests:
             return []
 
-        error = "Error at updating the tests list: "
+        error = "Error at updating the tests list from the request's form: "
         there_any_error = False
 
         if len(tests) > self._max_tests_number:
-            error += f"\nThe number of tests is greater than the max number of tests which is {self._max_tests_number}. "
+            error += f"\nThe number of tests is greater than the max number of tests which is {self._max_tests_number}."
             there_any_error = True
         try:
             tests = [int(test) for test in tests]
@@ -31,7 +32,7 @@ class TestsSection(ConfigurationSection):
             there_any_error = True
 
         if there_any_error:
-            return {"error": error}
+            raise ValueValidationError(error)
         return tests
 
     def validate_from_yaml(self, tests: list):
@@ -48,18 +49,13 @@ class TestsSection(ConfigurationSection):
             error += f"\nThe number of tests is greater than the max number of tests which is {self._max_tests_number}. "
             there_any_error = True
 
-        # try:
-        #     tests = [int(test) for test in tests]
-        # except ValueError:
-        #     error += "\nThe list of tests needs to be of positive integers."
-        #     there_any_error = True
-
         if any(test not in range(1, self._max_tests_number + 1) for test in tests):
             error += f"\nTest numbers need to be within range 1 to {self._max_tests_number}. "
             there_any_error = True
 
         if there_any_error:
             return {"error": error}
+
         return tests
 
     def update(self, tests: []):

@@ -40,7 +40,7 @@ class ConfigurationSection(object):
 
     def validate_and_update_from_yaml(self, value):
         validated_value = self.validate_from_yaml(value)
-        if isinstance(validated_value, dict):
+        if isinstance(validated_value, dict) and "error" in validated_value:
             return validated_value
         self.update(validated_value)
 
@@ -49,8 +49,6 @@ class ConfigurationSection(object):
 
     def validate_and_update(self, value):
         validated_value = self.validate(value)
-        if isinstance(validated_value, dict):
-            return validated_value
         self.update(validated_value)
 
     def validate(self, value) -> any:
