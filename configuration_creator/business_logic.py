@@ -1,6 +1,5 @@
 import random
 
-
 from configuration_creator.enums.mode_enum import Modes
 from configuration_creator.models.configuration import Configuration
 from configuration_creator.enums.configuration_section_enum import ConfigurationSections
@@ -192,3 +191,6 @@ class BusinessLogic:
         if errors:
             self._logger.add_errors(errors)
             raise ValueValidationError("There are few validation errors")
+
+    def get_configuration_data(self):
+        return self._configuration.as_dict()

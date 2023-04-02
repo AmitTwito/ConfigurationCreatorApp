@@ -6,7 +6,7 @@ from flask import render_template, request, redirect
 from .utils.errors.value_validation_error import ValueValidationError
 
 
-class ApiController:
+class Controller:
 
     def __init__(self, config_file_path=None, max_tests_number=None,
                  number_of_sections_to_randomize=None):
@@ -63,3 +63,10 @@ class ApiController:
             password = request.form.get('new-user-password')
             to_current_page = self.bl.add_user(user_type, email, password)
             return redirect(to_current_page)
+
+        @app.route('/configuration_data', methods=["GET"])
+        def get_configuration_data():
+            return self.bl.get_configuration_data()
+
+    def get_configuration_data(self):
+        return self.bl.get_configuration_data()
