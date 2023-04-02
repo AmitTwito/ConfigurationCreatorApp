@@ -10,8 +10,8 @@ from configuration_creator.models.configuration_sections.tests_section import Te
 from configuration_creator.models.configuration_sections.report_background_image_section import \
     ReportBackgroundImageSection
 from configuration_creator.defaults import DEFAULT_CONFIG_PATH
-from utils.errors.configuration_creator_error import ConfigurationCreatorError
-from utils.errors.yaml_validation_error import YamlValidationError
+from configuration_creator.utils.errors.configuration_creator_error import ConfigurationCreatorError
+from configuration_creator.utils.errors.yaml_validation_error import YamlValidationError
 
 
 class Configuration:

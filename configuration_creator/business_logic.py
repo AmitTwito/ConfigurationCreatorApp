@@ -6,8 +6,8 @@ from configuration_creator.models.configuration import Configuration
 from configuration_creator.enums.configuration_section_enum import ConfigurationSections
 from configuration_creator.models.logger import Logger, LogTypes
 from configuration_creator.models.user import UserTypes
-from utils.errors.configuration_creator_error import ConfigurationCreatorError
-from utils.errors.value_validation_error import ValueValidationError
+from .utils.errors.configuration_creator_error import ConfigurationCreatorError
+from .utils.errors.value_validation_error import ValueValidationError
 from .defaults import DEFAULT_CONFIG_PATH, DEFAULT_RANDOM_SECTIONS_NUMBER, DEFAULT_MAX_TESTS_NUMBER
 
 

@@ -1,5 +1,3 @@
-from models.logger import Logger, LogTypes
-
 
 class ConfigurationCreatorError(Exception):
 

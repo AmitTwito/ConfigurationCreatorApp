@@ -1,7 +1,7 @@
 from configuration_creator.enums.configuration_section_enum import ConfigurationSections
 from configuration_creator.enums.mode_enum import Modes
 from configuration_creator.models.configuration_sections.configuration_section import ConfigurationSection
-from utils.errors.value_validation_error import ValueValidationError
+from configuration_creator.utils.errors.value_validation_error import ValueValidationError
 
 
 class ModeSection(ConfigurationSection):

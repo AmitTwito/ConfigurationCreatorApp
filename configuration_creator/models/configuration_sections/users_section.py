@@ -3,9 +3,9 @@ from configuration_creator.enums.user_type_enum import UserTypes
 from configuration_creator.models.configuration_sections.configuration_section import ConfigurationSection
 from configuration_creator.models.user import User
 from configuration_creator.utils.input_validator import InputValidator
-from utils.errors.user_creation_error import UserAdditionError
-from utils.errors.user_deletion_error import UserDeletionError
-from utils.errors.value_validation_error import ValueValidationError
+from configuration_creator.utils.errors.user_creation_error import UserAdditionError
+from configuration_creator.utils.errors.user_deletion_error import UserDeletionError
+from configuration_creator.utils.errors.value_validation_error import ValueValidationError
 
 
 def get_emails_and_duplicates_from_users(users):

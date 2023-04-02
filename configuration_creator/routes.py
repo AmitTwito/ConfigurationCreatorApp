@@ -3,7 +3,7 @@ from configuration_creator.business_logic import BusinessLogic
 from configuration_creator.models.logger import LogTypes
 from flask import render_template, request, redirect
 
-from utils.errors.value_validation_error import ValueValidationError
+from .utils.errors.value_validation_error import ValueValidationError
 
 
 class ApiController:
