@@ -14,4 +14,3 @@ pycparser~=2.21
 zipp~=3.6.0
 dataclasses~=0.6
 pythonnet~=2.5.2
-requests~=2.27.1
