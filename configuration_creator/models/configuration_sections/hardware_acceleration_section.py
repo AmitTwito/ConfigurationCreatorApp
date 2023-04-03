@@ -8,7 +8,7 @@ class HardwareAccelerationSection(ConfigurationSection):
     def __init__(self, configuration_section_type: ConfigurationSections, template_file: str):
         super().__init__(configuration_section_type, template_file)
         self._is_hardware_acceleration_toggle_on = False
-        self._form_keys = [{"key": "toggle", "is_collection": False}]
+        self._form_keys = [{"key": "toggle-hardware-acceleration", "is_collection": False}]
 
     @property
     def is_hardware_acceleration_toggle_on(self):
@@ -25,10 +25,10 @@ class HardwareAccelerationSection(ConfigurationSection):
         return value
 
     def validate(self, value):
-        if value not in ['on', 'off']:
+        if value not in ['on', None]:
             raise ValueValidationError(
                 "Error at getting the hardware acceleration toggle value from the request's form. "
-                "Wrong toggle value, it needs to be 'on' or 'off.")
+                "Wrong toggle value")
         return value == 'on'
 
     def update(self, is_hardware_acceleration_toggle_on: bool):

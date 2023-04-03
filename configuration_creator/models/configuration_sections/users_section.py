@@ -92,7 +92,7 @@ class UsersSection(ConfigurationSection):
         try:
             error_message = ""
             if not InputValidator.is_email_valid(email) and not InputValidator.is_password_valid(password):
-                error_message = f"{error_prefix}. The email '{email}' has a wrong format, and the password is empty. " \
+                error_message = f"{error_prefix}. The email '{email}' has a wrong format, and the password is invalid. " \
                                 f"Please insert valid values."
             elif not InputValidator.is_password_valid(password):
                 error_message = f"{error_prefix}. The password inserted is empty, please insert a valid password"

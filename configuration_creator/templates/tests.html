@@ -4,11 +4,13 @@
     <div class="checkbox">
         {% if test in state.tests %}
         <label>
-            <input type="checkbox" name="selected-tests" value={{test}} checked="checked" form="save-config-form" onClick="toggleSelectAll()"/>
+            <input type="checkbox" name="selected-tests" value={{test}} checked="checked" form="save-config-form"
+                   onClick="toggleSelectAllTests()"/>
         </label>
         {% else %}
         <label>
-            <input type="checkbox" name="selected-tests" value={{test}} form="save-config-form" onClick="toggleSelectAll()"/>
+            <input type="checkbox" name="selected-tests" value={{test}} form="save-config-form"
+                   onClick="toggleSelectAllTests()"/>
         </label>
         {% endif %}
         Test {{test}}
@@ -16,8 +18,8 @@
     {% endfor %}
     <br>
     {% if state.are_all_tests_selected %}
-    <input type="checkbox" name="select-all-tests" checked="checked" onClick="selectAll()"/> Select All<br/>
+    <input type="checkbox" name="select-all-tests" checked="checked" onClick="selectAllTests()"/> Select All<br/>
     {% else %}
-    <input type="checkbox" name="select-all-tests" onClick="selectAll()"/> Select All<br/>
+    <input type="checkbox" name="select-all-tests" onClick="selectAllTests()"/> Select All<br/>
     {% endif %}
 </div>

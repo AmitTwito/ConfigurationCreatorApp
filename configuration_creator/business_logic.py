@@ -182,11 +182,10 @@ class BusinessLogic:
             for form_key in config_section.form_keys:
                 key = form_key["key"]
                 value = request_form.get(key) if not form_key["is_collection"] else request_form.getlist(key)
-                if value is not None:
-                    try:
-                        config_section.validate_and_update(value)
-                    except ValueValidationError as e:
-                        errors.append(str(e))
+                try:
+                    config_section.validate_and_update(value)
+                except ValueValidationError as e:
+                    errors.append(str(e))
 
         if errors:
             self._logger.add_errors(errors)

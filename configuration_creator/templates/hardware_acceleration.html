@@ -1,8 +1,10 @@
 <div class="form-check form-switch">
-    <label class="form-check-label" for="flexSwitchCheckDefault">Use hardware acceleration when available</label>
+    <label class="form-check-label">Use hardware acceleration when available</label>
     {% if state.is_hardware_acceleration_toggle_on %}
-    <input class="form-check-input" name="toggle" type="checkbox" role="switch" id="checked" form="save-config-form" checked>
+    <input class="form-check-input" name="toggle-hardware-acceleration" type="checkbox" form="save-config-form"
+           onClick="changeHardwareAccelerationToggleValue()" checked>
     {% else %}
-    <input class="form-check-input" name="toggle" type="checkbox" role="switch" form="save-config-form">
+    <input class="form-check-input" name="toggle-hardware-acceleration" type="checkbox" form="save-config-form"
+           onClick="changeHardwareAccelerationToggleValue()">
     {% endif %}
 </div>
