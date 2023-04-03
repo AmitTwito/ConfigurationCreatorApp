@@ -17,7 +17,7 @@ and then saves the configurations into a ```config.yaml``` file.
 
 Open CMD in the main folder, then:
 
-- If python is installed on you user only:
+- If python is installed on your machine user only:
 
 ```
 pip install -r requirements.txt
