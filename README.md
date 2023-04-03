@@ -48,7 +48,7 @@ python main.py
 In your ```main.py```, which needs to be in the working directory - this repo's main folder, do the following:
 
 ```
-**from configuration_creator import ConfigurationCreatorApp**   # import the package
+from configuration_creator import ConfigurationCreatorApp   # import the package
 
 if __name__ == '__main__':
     port = 5000
@@ -84,7 +84,8 @@ parameters:
 
 - On window closed, the ```run()``` function will return the configuration data in as ```dict``` object.
 - Also, when the application is running, you can get the current data through api with ```GET``` request:
-  ```http://localhost:<PORT>/configuration_data```
+  ```http://localhost:<PORT>/configuration_data
+  ```
 
 ## config.yaml
 
