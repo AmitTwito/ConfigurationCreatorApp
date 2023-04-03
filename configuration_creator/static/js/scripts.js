@@ -11,9 +11,9 @@ this.toggleSelectAllTests = function(){
 }
 
 this.changeHardwareAccelerationToggleValue = function(){
-     var toggle = document.getElementsByName('toggle-hardware-acceleration');
-     if (toggle[0].checked)
-        toggle[0].value="on"
+     var toggle = document.getElementsByName('toggle-hardware-acceleration')[0];
+     if (toggle.checked)
+        toggle.value="on"
      else
-        toggle[0].value="off"
+        toggle.value="off"
 }
