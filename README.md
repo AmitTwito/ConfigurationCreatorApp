@@ -84,7 +84,8 @@ parameters:
 
 - On window closed, the ```run()``` function will return the configuration data in as ```dict``` object.
 - Also, when the application is running, you can get the current data through api with ```GET``` request:
-  ```http://localhost:<PORT>/configuration_data
+  ```
+  http://localhost:<PORT>/configuration_data
   ```
 
 ## config.yaml
