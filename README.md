@@ -52,7 +52,6 @@ In your ```main.py```, which needs to be in the working directory - this repo's 
 from configuration_creator import ConfigurationCreatorApp   # import the package
 
 if __name__ == '__main__':
-    port = 5000
     config_file_path = "config.yaml"
     number_of_sections_to_randomize = 5
     max_tests_number = 10
@@ -60,9 +59,7 @@ if __name__ == '__main__':
     # Use and init the app object
     configuration_creator_app = ConfigurationCreatorApp(config_file_path=config_file_path,
                                                         max_tests_number=max_tests_number,
-                                                        number_of_sections_to_randomize=number_of_sections_to_randomize,
-                                                        port=port, width=1200,
-                                                        height=800, )
+                                                        number_of_sections_to_randomize=number_of_sections_to_randomize,)
     
     # Get and print the configuration data that the user set in the application as dict
     print(configuration_creator_app.run())
@@ -78,8 +75,8 @@ parameters:
   Default is 10
 - ```number_of_sections_to_randomize``` is the number of sections to randomize and display in the first page, and the
   rest in the last page. It cannot be negative or above 5. Default is 3
-- ```width``` is the width of the application window. Default is 1200
-- ```height``` is the height of the application window. Default is 800
+- ```is_verbose``` accepts bool value, if ```True```, the logger will show all logs - messages and errors. else - it
+  will show only errors.Default is True.
 
 ## Getting the configuration Data
 

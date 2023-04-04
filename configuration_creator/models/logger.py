@@ -23,9 +23,8 @@ class Log:
 
 
 class Logger:
-    def __init__(self):
-        self._logs = [Log("Configuration Creator V1", LogTypes.MESSAGE),
-                      Log("Please make sure to insert correct inputs.", LogTypes.MESSAGE)]
+    def __init__(self, ):
+        self._logs = []
 
     def _add_log(self, text: str, log_type: LogTypes):
         text = f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} {text}'
@@ -44,8 +43,8 @@ class Logger:
         if isinstance(ex, Exception):
             print(''.join(traceback.TracebackException.from_exception(ex).format()))
         for error in errors:
-            self._add_log(f"{error}", log_type=LogTypes.ERROR)
-        self._add_log(error_suffix, log_type=LogTypes.ERROR)
+            self.add_error(f"{error}", )
+        self.add_error(error_suffix, )
 
     @property
     def logs(self):

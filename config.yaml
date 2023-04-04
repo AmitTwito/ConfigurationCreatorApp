@@ -1,5 +1,5 @@
 hardware_acceleration: true
-mode: Production
+mode: Debug
 report_background_image: configuration_creator_uploads\barilansachal.png
 tests:
 - 1
@@ -10,13 +10,9 @@ tests:
 - 6
 - 7
 - 8
+- 9
+- 10
 users:
-- email: sadas@fasdas.com
-  password: asdas
-  type: Standard
-- email: asdsa@asdas.com
-  password: asdas
-  type: Admin
 - email: asdasd@asdsaasdas.com
-  password: asdas
-  type: Admin
+  password: sdasds
+  type: Standard

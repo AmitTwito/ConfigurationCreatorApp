@@ -1,9 +1,14 @@
 <div class="container overflow-auto p-3 mb-3mb-md-0 mr-md-3" style="max-height:100px;overflow:scroll;background-color:white" id="logger">
+    Configuration Creator V1
+    <br>
+    Please make sure to insert correct inputs.
     {% for log in state.logs %}
+    {% if state.is_verbose or state.config_options.log_types.ERROR == log.type %}
     <label style="color: {{state.log_type_colors[log.type]}}">
         {{log.text}}
     </label>
     <br>
+    {% endif %}
     {% endfor %}
 </div>
 <script>

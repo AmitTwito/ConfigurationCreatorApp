@@ -13,14 +13,15 @@ from .defaults import DEFAULT_CONFIG_PATH, DEFAULT_RANDOM_SECTIONS_NUMBER, DEFAU
 
 
 class BusinessLogic:
-    def __init__(self, config_file_path=DEFAULT_CONFIG_PATH, max_tests_number=DEFAULT_MAX_TESTS_NUMBER,
-                 number_of_sections_to_randomize=DEFAULT_RANDOM_SECTIONS_NUMBER):
+    def __init__(self, config_file_path, max_tests_number,
+                 number_of_sections_to_randomize, is_verbose):
         self._config_section_to_template = {ConfigurationSections.MODE: "mode.html",
                                             ConfigurationSections.TESTS: "tests.html",
                                             ConfigurationSections.USERS: "users_table.html",
                                             ConfigurationSections.REPORT_BACKGROUND_IMAGE: "report_background_image.html",
                                             ConfigurationSections.HARDWARE_ACCELERATION: "hardware_acceleration.html", }
         self._logger = Logger()
+        self._is_verbose = is_verbose
         # self._max_tests_number = max_tests_number
         self._max_tests_number, self._number_of_sections_to_randomize = self._validate_and_reset_parameters(
             max_tests_number, number_of_sections_to_randomize)
@@ -30,7 +31,7 @@ class BusinessLogic:
                                             max_tests_number=self._max_tests_number)
 
         self.log_type_colors = {LogTypes.MESSAGE: "black", LogTypes.ERROR: "red"}
-        self.config_options = {"modes": Modes, "user_types": UserTypes,
+        self.config_options = {"modes": Modes, "user_types": UserTypes, "log_types": LogTypes,
                                "all_tests": list(range(1, self._max_tests_number + 1)), }
 
         self._random_sections, self._rest_of_the_sections = [], []
@@ -170,7 +171,7 @@ class BusinessLogic:
                 "tests": tests, "are_all_tests_selected": len(tests) == self._max_tests_number,
                 "logs": self._logger.logs, "log_type_colors": self.log_type_colors,
                 "config_options": self.config_options, "sections_number": len(ConfigurationSections),
-                "number_of_sections_to_randomize": self.number_of_sections_to_randomize, }
+                "number_of_sections_to_randomize": self.number_of_sections_to_randomize, "is_verbose": self._is_verbose}
 
     def validate_and_update_config(self, is_randomized_sections, request_form, request_files=None):
         sections = self.random_sections if is_randomized_sections else self._rest_of_the_sections

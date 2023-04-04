@@ -4,27 +4,42 @@ from threading import Thread
 import webview
 from flask import Flask
 from .routes import Controller
-from .defaults import DEFAULT_PORT
+from .defaults import DEFAULT_CONFIG_PATH, DEFAULT_MAX_TESTS_NUMBER, DEFAULT_RANDOM_SECTIONS_NUMBER
+from screeninfo import get_monitors
+import socket
 
 os.environ['WEBVIEW2_USER_DATA_FOLDER'] = os.path.join(os.environ['LOCALAPPDATA'], 'Microsoft', 'EdgeWebView')
 
 
+def find_open_port_for_app():
+    # https://stackoverflow.com/questions/5085656/how-to-select-random-port-number-in-flask
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(('localhost', 0))
+    port = sock.getsockname()[1]
+    sock.close()
+    return port
+
+
+def get_resolution_of_user():
+    m = get_monitors()[0]
+    return int(m.width * 0.5), int(m.height * 0.7)
+
+
 class ConfigurationCreatorApp:
 
-    def __init__(self, config_file_path, max_tests_number, number_of_sections_to_randomize, port=DEFAULT_PORT,
-                 width=1200, height=800, ):
-        if port < 1024 or port > 65536:
-            print("ERROR: Port number needs to be positive, 1024 to 65536", file=sys.stderr)
-            sys.exit(0)
-        self._port = port
+    def __init__(self, max_tests_number=DEFAULT_MAX_TESTS_NUMBER,
+                 number_of_sections_to_randomize=DEFAULT_RANDOM_SECTIONS_NUMBER, config_file_path=DEFAULT_CONFIG_PATH,
+                 is_verbose=True, ):
+
+        self._port = find_open_port_for_app()
         self._host = "localhost"
 
-        self._width = width
-        self._height = height
+        self._width, self._height = get_resolution_of_user()
+
+        self._controller = Controller(self.close_application_window, config_file_path, max_tests_number,
+                                      number_of_sections_to_randomize, is_verbose=is_verbose)
 
         self._app = Flask(__name__)
-
-        self._controller = Controller(config_file_path, max_tests_number, number_of_sections_to_randomize)
         self._controller.init_app(self._app)
 
         # https://stackoverflow.com/questions/49469978/properly-terminate-flask-web-app-running-in-a-thread
@@ -33,22 +48,20 @@ class ConfigurationCreatorApp:
 
     def run(self, ):
         self._app_thread.start()
-        self._start_webview(self._port, self._width, self._height)
+        self.open_application_window()
         return self._controller.get_configuration_data()
 
     def _run_app(self, ):
         try:
             self._app.run(host=self._host, port=self._port)
         except Exception as e:
-            print(
-                f"\nERROR: The port {self._port} is not valid, or not available.\n", file=sys.stderr)
-            self._window.destroy()
+            self.close_application_window()
+            raise e
 
-    def _stop_app(self, ):
-        sys.exit(0)
-
-    def _start_webview(self, port, width, height):
-        self._window = webview.create_window('Configuration Creator', f'http://{self._host}:{port}/',
-                                             width=width, height=height)
-        self._window.events.closed += self._stop_app
+    def open_application_window(self, ):
+        self._window = webview.create_window('Configuration Creator', f'http://{self._host}:{self._port}/',
+                                             width=self._width, height=self._height, )
         webview.start()
+
+    def close_application_window(self):
+        self._window.destroy()
