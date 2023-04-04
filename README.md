@@ -59,7 +59,8 @@ if __name__ == '__main__':
     # Use and init the app object
     configuration_creator_app = ConfigurationCreatorApp(config_file_path=config_file_path,
                                                         max_tests_number=max_tests_number,
-                                                        number_of_sections_to_randomize=number_of_sections_to_randomize,)
+                                                        number_of_sections_to_randomize=number_of_sections_to_randomize,
+                                                        is_verbose=True)
     
     # Get and print the configuration data that the user set in the application as dict
     print(configuration_creator_app.run())
