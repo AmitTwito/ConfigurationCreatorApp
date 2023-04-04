@@ -2,6 +2,7 @@
 
 - The application works on python 3.6.8.
 - Used flask and pywebview to display the web application inside a normal window and not a browser.
+- You will need Microsoft Edge installed on you workstation.
 - Make sure to reinstall ```requirements.txt``` when repulling this repo
 - The app cannot select a report background image and get its path as it is not possible (web application), so it will
   get the name of the image and put it in the textbox.
