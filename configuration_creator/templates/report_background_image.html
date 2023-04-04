@@ -1,8 +1,11 @@
 <div style="width:500px">
-    <input type="file" class="form-control" accept=".png, .jpg, .jpeg, .gif" id="file" name="image"
-           onchange="document.getElementById('image-path').value = document.getElementById('file').files[0].name">
+    <input type="file" class="form-control" accept=".png, .jpg, .jpeg, .gif" id="report-background-image"
+           name="report-background-image"
+           onchange="changeImagePathText()"
+           form="save-config-form">
     <br>
-    <input class="form-control" id="image-path" name="image-path" type="text" placeholder="Enter path for report background image"
+    <input class="form-control" id="report-background-image-path" name="report-background-image-path" type="text"
+           placeholder="Enter path for report background image"
            value="{{state.chosen_image_path}}" form="save-config-form">
 </div>
 

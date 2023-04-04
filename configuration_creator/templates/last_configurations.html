@@ -9,7 +9,7 @@
 <hr>
 {% endfor %}
 <br>
-<form method="post" action="/finish" id="save-config-form">
+<form method="post" action="/finish" id="save-config-form" enctype="multipart/form-data">
     <button type="submit" class="btn btn-success" style="float: right;">Finish</button>
 </form>
 <a href="{{url_for('index')}}" class="btn btn-info" role="button">Back</a>

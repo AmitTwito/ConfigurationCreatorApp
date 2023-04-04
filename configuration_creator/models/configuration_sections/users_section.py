@@ -25,10 +25,6 @@ class UsersSection(ConfigurationSection):
         self._emails = set()
         # self._form_keys = {"key": "", "is_collection": True}
 
-    @property
-    def form_keys(self):
-        return {}
-
     def validate_and_update(self, value):
         pass
 

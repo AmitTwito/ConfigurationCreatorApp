@@ -12,8 +12,9 @@ this.toggleSelectAllTests = function(){
 
 this.changeHardwareAccelerationToggleValue = function(){
      var toggle = document.getElementsByName('toggle-hardware-acceleration')[0];
-     if (toggle.checked)
-        toggle.value="on"
-     else
-        toggle.value="off"
+     toggle.value = toggle.checked ? "on" : "off"
+}
+
+this.changeImagePathText = function(){
+    document.getElementById('report-background-image-path').value=document.getElementById('report-background-image').files[0].name
 }

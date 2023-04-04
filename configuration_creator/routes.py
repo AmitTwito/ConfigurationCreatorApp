@@ -24,7 +24,8 @@ class Controller:
         def last_configurations():
             if request.method == "POST":
                 try:
-                    self.bl.validate_and_update_config(is_randomized_sections=True, request_form=request.form)
+                    self.bl.validate_and_update_config(is_randomized_sections=True, request_form=request.form,
+                                                       request_files=request.files)
                     self.bl.save_config_to_file()
                     return render_template('last_configurations.html', state=self.bl.get_state())
                 except ValueValidationError as e:
@@ -43,7 +44,7 @@ class Controller:
                 is_randomized_sections = True
             try:
                 self.bl.validate_and_update_config(is_randomized_sections=is_randomized_sections,
-                                                   request_form=request.form)
+                                                   request_form=request.form, request_files=request.files)
                 self.bl.save_config_to_file()
             except Exception as e:
                 print('Error on POST request /finish: ')

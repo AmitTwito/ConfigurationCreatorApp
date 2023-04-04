@@ -1,4 +1,6 @@
+import os
 import random
+from pathlib import Path
 
 from configuration_creator.enums.mode_enum import Modes
 from configuration_creator.models.configuration import Configuration
@@ -7,7 +9,7 @@ from configuration_creator.models.logger import Logger, LogTypes
 from configuration_creator.models.user import UserTypes
 from .utils.errors.configuration_creator_error import ConfigurationCreatorError
 from .utils.errors.value_validation_error import ValueValidationError
-from .defaults import DEFAULT_CONFIG_PATH, DEFAULT_RANDOM_SECTIONS_NUMBER, DEFAULT_MAX_TESTS_NUMBER
+from .defaults import DEFAULT_CONFIG_PATH, DEFAULT_RANDOM_SECTIONS_NUMBER, DEFAULT_MAX_TESTS_NUMBER, DEFAULT_UPLOADS_DIR
 
 
 class BusinessLogic:
@@ -154,11 +156,6 @@ class BusinessLogic:
         except Exception as e:
             raise Exception(f'{e.__class__.__name__} saving the configuration to file: {str(e)}')
 
-    def _get_page_for_redirection(self, configuration_section: ConfigurationSections):
-        if configuration_section in [section.configuration_section_type for section in self.random_sections]:
-            return '/'
-        return '/last_configurations'
-
     def get_state(self):
         config = self._configuration.as_dict()
         tests = config[ConfigurationSections.TESTS.name_lower_case]
@@ -175,10 +172,19 @@ class BusinessLogic:
                 "config_options": self.config_options, "sections_number": len(ConfigurationSections),
                 "number_of_sections_to_randomize": self.number_of_sections_to_randomize, }
 
-    def validate_and_update_config(self, is_randomized_sections, request_form):
+    def validate_and_update_config(self, is_randomized_sections, request_form, request_files=None):
         sections = self.random_sections if is_randomized_sections else self._rest_of_the_sections
         errors = []
         for config_section in sections:
+            if request_files:
+                for file_key in config_section.file_keys:
+                    key = file_key["key"]
+                    value = request_files[key] if not file_key["is_collection"] else request_files.getlist(key)
+                    try:
+                        config_section.validate_files_and_update(value)
+                    except ValueValidationError as e:
+                        errors.append(str(e))
+
             for form_key in config_section.form_keys:
                 key = form_key["key"]
                 value = request_form.get(key) if not form_key["is_collection"] else request_form.getlist(key)
@@ -190,6 +196,11 @@ class BusinessLogic:
         if errors:
             self._logger.add_errors(errors)
             raise ValueValidationError("There are few validation errors")
+
+    def _get_page_for_redirection(self, configuration_section: ConfigurationSections):
+        if configuration_section in [section.configuration_section_type for section in self.random_sections]:
+            return '/'
+        return '/last_configurations'
 
     def get_configuration_data(self):
         return self._configuration.as_dict()

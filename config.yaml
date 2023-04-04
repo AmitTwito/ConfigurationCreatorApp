@@ -1,11 +1,21 @@
-hardware_acceleration: false
+hardware_acceleration: true
 mode: Production
-report_background_image: asd.png
+report_background_image: C:\Users\Amit\Desktop\sdsdafasd.jpg
 tests:
+- 1
+- 2
+- 3
+- 4
+- 5
+- 6
 - 7
 - 8
+- 9
 - 10
 users:
 - email: sadas@fasdas.com
   password: asdas
   type: Standard
+- email: asdsa@asdas.com
+  password: asdas
+  type: Admin
