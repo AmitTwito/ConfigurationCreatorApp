@@ -13,7 +13,7 @@ class InputValidator:
         return bool(match)
 
     @classmethod
-    def is_file_path_valid_image(cls, path:str):
+    def is_file_path_valid_image(cls, path: str):
         return InputValidator.is_file_path_exists(path) and InputValidator.is_file_path_image(path)
 
     @classmethod
