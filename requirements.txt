@@ -14,3 +14,4 @@ pycparser~=2.21
 zipp~=3.6.0
 dataclasses~=0.6
 pythonnet~=2.5.2
+screeninfo~=0.8.1

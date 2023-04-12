@@ -1,6 +1,6 @@
 hardware_acceleration: true
 mode: Debug
-report_background_image: configuration_creator_uploads\dd4957fa-4ca0-4ea1-86b0-2c81814aba08.jpg
+report_background_image: asd.png
 tests:
 - 1
 - 2
