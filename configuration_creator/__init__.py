@@ -20,7 +20,7 @@ def find_open_port_for_app():
     return port
 
 
-def get_resolution_of_user():
+def get_width_and_height_of_window_by_resolution_of_user():
     m = get_monitors()[0]
     return int(m.width * 0.5), int(m.height * 0.7)
 
@@ -34,7 +34,7 @@ class ConfigurationCreatorApp:
         self._port = find_open_port_for_app()
         self._host = "localhost"
 
-        self._width, self._height = get_resolution_of_user()
+        self._width, self._height = get_width_and_height_of_window_by_resolution_of_user()
 
         self._controller = Controller(self.close_application_window, config_file_path, max_tests_number,
                                       number_of_sections_to_randomize, is_verbose=is_verbose)
@@ -42,11 +42,10 @@ class ConfigurationCreatorApp:
         self._app = Flask(__name__)
         self._controller.init_app(self._app)
 
+    def run(self, ):
         # https://stackoverflow.com/questions/49469978/properly-terminate-flask-web-app-running-in-a-thread
         self._app_thread = Thread(target=self._run_app)
         self._app_thread.setDaemon(True)
-
-    def run(self, ):
         self._app_thread.start()
         self.open_application_window()
         return self._controller.get_configuration_data()
