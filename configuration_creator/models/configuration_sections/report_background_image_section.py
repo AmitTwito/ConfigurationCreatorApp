@@ -6,7 +6,7 @@ from configuration_creator.utils.input_validator import InputValidator
 from configuration_creator.utils.errors.value_validation_error import ValueValidationError
 import os
 
-from defaults import DEFAULT_UPLOADS_DIR
+from configuration_creator.defaults import DEFAULT_UPLOADS_DIR
 
 
 class ReportBackgroundImageSection(ConfigurationSection):
